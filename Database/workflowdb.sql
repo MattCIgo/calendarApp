@@ -1,6 +1,4 @@
-CREATE SCHEMA Workflow;
-
-CREATE TABLE Workflow.user (
+CREATE TABLE public.user (
     user_id int,
     first_name varchar(50) NOT NULL,
     last_name varchar(50) NOT NULL,
