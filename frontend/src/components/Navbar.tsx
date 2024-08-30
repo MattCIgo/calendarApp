@@ -1,12 +1,12 @@
-
+import { Link } from 'react-router-dom';
 
 const Navbar = (): JSX.Element => {
 
   return (
     <nav className="navbar">
-      <h1 id="title"><a href="/">Workflow App</a></h1>
+      <h1 id="title"><Link to="/">Workflow App</Link></h1>
       <div className="links">
-        <a href="/login">Login</a>
+        <Link to="/login">Login</Link>
       </div>
     </nav>
   );
