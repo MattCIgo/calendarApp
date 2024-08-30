@@ -1,7 +1,11 @@
 const Loginpage = (): JSX.Element => {
 
     return (
-      <p>bye</p>
+      <div className="loginContainer">
+        <div className="loginBox">
+          <h1>Login</h1>
+        </div>
+      </div>
     );
   }
   
