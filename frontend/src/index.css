@@ -32,6 +32,10 @@ body {
   color: #45A29E;
 }
 
+.navbar a:hover{
+  color: rgb(55, 55, 212);
+}
+
 
 
 
@@ -94,7 +98,8 @@ body {
   position: relative;
   background-color: #1F2833;
   max-width: 100vw;
-  height: 870px;
+  min-height: 100vh;
+  overflow: auto;
 }
 
 .loginContainer .loginBox {
@@ -109,11 +114,78 @@ body {
   margin-top: auto;
   margin-bottom: auto;
   max-width: 300px;
-  height: 400px;
+  height: 250px;
   border-radius: 25px;
 }
 
 .loginContainer .loginBox h1{
   text-align: center;
   color:#45A29E;
+}
+
+.loginContainer .loginBox #username{
+  margin-bottom: 25px;
+}
+
+.loginContainer .loginBox #password{
+  margin-bottom: 40px;
+}
+
+.loginContainer .loginBox #login{
+  background-color: #1F2833;
+  text-align: center;
+  margin-left: 75px;
+  width: 150px;
+  height: 30px;
+  max-width: 150px;
+  border-radius: 15px;
+  border-color: #45A29E;
+}
+
+
+
+
+/* Signuppage CSS */
+.signupContainer {
+  position: relative;
+  background-color: #1F2833;
+  width: 100vw;
+  min-height: 100vh;
+  overflow: auto;
+}
+
+.signupContainer .signupBox {
+  background-color: #0B0C10;
+  position: absolute;
+  left: 5%; 
+  right: 5%; 
+  margin-left: auto; 
+  margin-right: auto; 
+  margin-top: 200px;
+  margin-bottom: 100px;
+  max-width: 550px;
+  max-height: 750px;
+  border-radius: 25px;
+}
+
+.signupContainer .signupBox #signupform {
+  margin-right: 150px;
+}
+
+.signupContainer .signupBox h1 {
+  text-align: center;
+  color:#45A29E;
+}
+
+.signupContainer .signupBox #signupform  .signuplabel {
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+
+.signupContainer .signupBox #signupform  #signup {
+  width: 175px; 
+  margin-bottom: 40px;
+  height: 30px;
+  border-radius: 15px;
+  border-color: #45A29E;
 }

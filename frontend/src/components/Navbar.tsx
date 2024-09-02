@@ -6,7 +6,8 @@ const Navbar = (): JSX.Element => {
     <nav className="navbar">
       <h1 id="title"><Link to="/">Workflow App</Link></h1>
       <div className="links">
-        <Link to="/login">Login/Sign up</Link>
+        <Link to="/signup" style={{marginRight:30}}>Sign up</Link>
+        <Link to="/login">Login</Link>
       </div>
     </nav>
   );
