@@ -80,7 +80,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME':'workflowdb',
         'USER':'postgres',
-        'PASSWORD':'password',
+        'PASSWORD':'otto1234',
         'HOST':'localhost',
         'PORT':'5432',
     }
