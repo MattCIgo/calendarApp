@@ -18,7 +18,7 @@ class UserCreate(APIView):
             password = serializer.data.get('password')
             email = serializer.data.get('email')
 
-            user = User(first_name=first_name, last_name=last_name, email=email, password=password)
+            user = user(first_name=first_name, last_name=last_name, email=email, password=password)
             user.save()
 
             return Response(CreateUserSerializer(user).data, status=status.HTTP_200_OK)

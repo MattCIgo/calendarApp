@@ -4,8 +4,8 @@ VALUES (1234, 'Matt', 'Igo', 'mcigo332@gmail.com', 'abc123');
 select * 
 from public.user;
 
-delete from Workflow.user;
+delete from "user";
 
-drop table Workflow.user;
+drop table "user";
 
 drop schema Workflow;
