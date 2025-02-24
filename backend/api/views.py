@@ -6,23 +6,25 @@ from .serializers import UserSerializer, CreateUserSerializer
 from rest_framework.views import APIView
 import random
 
+
 class UserCreate(APIView):
     serializer_class = CreateUserSerializer
 
     def post(self, request, format=None):
-
         serializer = self.serializer_class(data=request.data)
+        
+        #Make sure to enter valid email
         if serializer.is_valid():
-            first_name = serializer.data.get('first_name')
-            last_name = serializer.data.get('last_name')
-            password = serializer.data.get('password')
-            email = serializer.data.get('email')
+            first_name = serializer.validated_data['first_name']
+            last_name = serializer.validated_data['last_name']
+            password = serializer.validated_data['password']
+            email = serializer.validated_data['email']
+            user_id = random.randint(111111111, 999999999)
 
-            user = user(first_name=first_name, last_name=last_name, email=email, password=password)
+            user = User(user_id=user_id, first_name=first_name, last_name=last_name, email=email, password=password)
             user.save()
 
-            return Response(CreateUserSerializer(user).data, status=status.HTTP_200_OK)
+            return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
 
-        #TODO: change response
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response("Enter Valid Email", status=status.HTTP_404_NOT_FOUND)
 
