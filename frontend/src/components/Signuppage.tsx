@@ -2,6 +2,7 @@
 
 const Signuppage = (): JSX.Element => {
 
+  // TODO: make this function into its own component??
   const handleSignup = (e: React.ChangeEvent<any>) => {
     // Prevent page from reloading and disrupting fetch
     e.preventDefault();
