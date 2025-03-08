@@ -9,3 +9,8 @@ delete from "user";
 drop table "user";
 
 drop schema Workflow;
+
+select * 
+from public.authtoken_token;
+
+delete from authtoken_token;

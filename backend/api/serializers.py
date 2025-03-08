@@ -1,6 +1,10 @@
 from rest_framework import serializers
 from.models import User
 
+"""
+user Model Serializers
+"""
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -9,5 +13,10 @@ class UserSerializer(serializers.ModelSerializer):
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        #Only Fields in POST request
+        # Only Fields in POST request
         fields = ('first_name', 'last_name', 'email', 'password')
+
+class LoginUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('email', 'password')

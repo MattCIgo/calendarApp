@@ -6,31 +6,31 @@ const Loginpage = (): JSX.Element => {
   const handleLogin = (e: React.ChangeEvent<any>) => {
     e.preventDefault();
 
-    // Check for null values
-    if ((document.getElementById('username') as HTMLInputElement).value == null ||
-      (document.getElementById('password') as HTMLInputElement).value == null) {
-        return;
-    }
-
     // Check for empty Strings
     if ((document.getElementById('username') as HTMLInputElement).value == '' ||
       (document.getElementById('password') as HTMLInputElement).value == '') {
-        alert("Enter All Credentials");
+        console.log("Enter All Credentials");
         return;
     }
 
-    let email = (document.getElementById('email') as HTMLInputElement).value;
+    let email = (document.getElementById('username') as HTMLInputElement).value;
     let password = (document.getElementById('password') as HTMLInputElement).value;
 
     fetch('http://localhost:8000/login', {
-      method: 'GET',
+      method: 'POST',
       headers: { "Content-Type" : "application/json" },
       body: JSON.stringify({"email" : email,
         "password" : password
       }),
-    }).then(()=> {
-      alert('You are Logged In!');
-    })
+    }).then(response => {
+      if(response.ok) {
+        console.log("Logged in!");
+      }
+      return response.json();
+    }).then(data =>{
+      console.log(data);
+    }
+  )
   } 
 
   return (

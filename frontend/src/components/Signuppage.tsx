@@ -1,30 +1,34 @@
 // TODO: functions to add user to database/ hooks etc
 
+import { json } from "react-router-dom";
+
 const Signuppage = (): JSX.Element => {
 
-  // TODO: make this function into its own component??
   const handleSignup = (e: React.ChangeEvent<any>) => {
     // Prevent page from reloading and disrupting fetch
     e.preventDefault();
-
-    // Check for null values
-    if ((document.getElementById('firstname') as HTMLInputElement).value == null ||
-      (document.getElementById('lastname') as HTMLInputElement).value == null ||
-      (document.getElementById('email') as HTMLInputElement).value == null ||
-      (document.getElementById('signuppass') as HTMLInputElement).value == null) {
-        return;
-    }
 
     // Check for empty Strings
     if ((document.getElementById('firstname') as HTMLInputElement).value == '' ||
       (document.getElementById('lastname') as HTMLInputElement).value == '' ||
       (document.getElementById('email') as HTMLInputElement).value == '' ||
       (document.getElementById('signuppass') as HTMLInputElement).value == '') {
-        alert("Enter All Credentials");
+        console.log("Enter All Credentials");
         return;
     }
 
-    // TODO: Cyclic error
+    // TODO: Check for valid Email (REGEX)
+
+    // Check if re-entered password matches
+    if ((document.getElementById('signuppass') as HTMLInputElement).value !=
+      (document.getElementById('resignuppass') as HTMLInputElement).value) {
+        console.log("Passwords do not Match.");
+        return;
+    }
+
+
+
+    // ERROR: Cyclic referencing
     let firstName = (document.getElementById('firstname') as HTMLInputElement).value;
     let lastName = (document.getElementById('lastname') as HTMLInputElement).value;
     let email = (document.getElementById('email') as HTMLInputElement).value;
@@ -38,9 +42,17 @@ const Signuppage = (): JSX.Element => {
         "password" : password,
         "email" : email
       }),
-    }).then(()=> {
-      alert('User Registered!');
-    })
+    }).then(response => {
+        if(response.ok) {
+          console.log("User Created");
+          return;
+        }
+        return response.json();
+      }).then(data =>{
+        // TODO: parse error message/ how to replaces email with default object to access error? for loop?
+        console.log(data.email[0]);
+      }
+    )
   } 
   
   return (
