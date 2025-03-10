@@ -1,8 +1,10 @@
+import Calendar from "./Calendar";
 
 const Calendarpage = (): JSX.Element => {
 
     return (
-      <div className="calendarContainer">
+      <div className="calendarPageContainer">
+        <Calendar />
       </div>
     );
   }

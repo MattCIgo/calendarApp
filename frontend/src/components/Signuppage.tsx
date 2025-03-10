@@ -5,7 +5,6 @@ import { json } from "react-router-dom";
 const Signuppage = (): JSX.Element => {
 
   const handleSignup = (e: React.ChangeEvent<any>) => {
-    // Prevent page from reloading and disrupting fetch
     e.preventDefault();
 
     // Check for empty Strings
@@ -13,7 +12,7 @@ const Signuppage = (): JSX.Element => {
       (document.getElementById('lastname') as HTMLInputElement).value == '' ||
       (document.getElementById('email') as HTMLInputElement).value == '' ||
       (document.getElementById('signuppass') as HTMLInputElement).value == '') {
-        console.log("Enter All Credentials");
+        alert("Enter All Credentials");
         return;
     }
 
@@ -22,13 +21,10 @@ const Signuppage = (): JSX.Element => {
     // Check if re-entered password matches
     if ((document.getElementById('signuppass') as HTMLInputElement).value !=
       (document.getElementById('resignuppass') as HTMLInputElement).value) {
-        console.log("Passwords do not Match.");
+        alert("Passwords do not Match.");
         return;
     }
 
-
-
-    // ERROR: Cyclic referencing
     let firstName = (document.getElementById('firstname') as HTMLInputElement).value;
     let lastName = (document.getElementById('lastname') as HTMLInputElement).value;
     let email = (document.getElementById('email') as HTMLInputElement).value;
@@ -45,12 +41,13 @@ const Signuppage = (): JSX.Element => {
     }).then(response => {
         if(response.ok) {
           console.log("User Created");
-          return;
+        } else {
+          //TODO: get more specific error from backend
+          throw new Error("Something went wrong");
         }
-        return response.json();
-      }).then(data =>{
+      }).catch((error) =>{
         // TODO: parse error message/ how to replaces email with default object to access error? for loop?
-        console.log(data.email[0]);
+        alert(error.message);
       }
     )
   } 

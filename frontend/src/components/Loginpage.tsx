@@ -1,15 +1,15 @@
-// TODO: functions to send login data to server for authentication
+import { useNavigate } from "react-router-dom";
 
 const Loginpage = (): JSX.Element => {
+  const navigate = useNavigate();
 
-  // TODO: Complete this fucntion
   const handleLogin = (e: React.ChangeEvent<any>) => {
     e.preventDefault();
 
     // Check for empty Strings
     if ((document.getElementById('username') as HTMLInputElement).value == '' ||
       (document.getElementById('password') as HTMLInputElement).value == '') {
-        console.log("Enter All Credentials");
+        alert("Enter All Credentials");
         return;
     }
 
@@ -23,14 +23,18 @@ const Loginpage = (): JSX.Element => {
         "password" : password
       }),
     }).then(response => {
-      if(response.ok) {
-        console.log("Logged in!");
-      }
       return response.json();
     }).then(data =>{
-      console.log(data);
+      // If a token is returned then log the user in
+      if (data[0].token) {
+        navigate("/", { replace: true});
+        localStorage.setItem('token', data[0].token);
+        return 
+      }
+
+      alert("Incorrect Username or Password");
     }
-  )
+    )
   } 
 
   return (

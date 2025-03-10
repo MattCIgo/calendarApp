@@ -9,7 +9,7 @@ from .models import User
 import random
 
 
-#TODO: validate token for every request
+#TODO: validate token for every request****
 #TODO: log user in on account creation
 
 
@@ -49,6 +49,7 @@ class UserCreate(APIView):
 """
 class UserLogin(APIView):
     def post(self, request, format=None):
+        #TODO: User already logged in error
         serializer_class = LoginUserSerializer
         serializer = serializer_class(data=request.data)
 
@@ -56,10 +57,9 @@ class UserLogin(APIView):
         email = serializer.initial_data['email']
         password = serializer.initial_data['password']
 
-        # TODO: valid user: dsaasd@dfa.com, fdsaasfd, use get to get 1 object from database
         u = User.objects.filter(email=email, password=password)
 
-        # TODO: better way to check, also send back token***
+        # TODO: better way to check (for 1), also send back token***
         if len(u) < 1:  
             return Response([{"error": "User doesn't exist"}], status=status.HTTP_400_BAD_REQUEST)
 
@@ -67,14 +67,14 @@ class UserLogin(APIView):
         user_token = Token.objects.create(user=u[0])
         print(user_token)
 
-        return Response([{"Token": user_token.key}], status=status.HTTP_200_OK)
+        return Response([{"token": user_token.key}], status=status.HTTP_200_OK)
 
 """
     Logging out
 """
 class UserLogout(APIView):
     def post(self, request, format=None):
-        #TODO: delete token. Need any data sent?
+        #TODO: delete token. Need any data sent? send token
         serializer_class = LoginUserSerializer
         serializer = serializer_class(data=request.data)
 
