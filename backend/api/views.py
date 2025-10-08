@@ -9,7 +9,7 @@ from .models import User
 import random
 
 
-#TODO: validate token for every request****
+#TODO: validate token for every request**** create token validation decorator?
 #TODO: log user in on account creation
 
 
@@ -33,7 +33,7 @@ class UserCreate(APIView):
             email = serializer.validated_data['email']
             user_id = random.randint(111111111, 999999999)
 
-            # TODO: check if generated used ID is already in use 
+            # TODO: better way to generate unique user id (also need to check if already there)
 
             user = User(user_id=user_id, first_name=first_name, last_name=last_name, email=email, password=password)
             user.save()
@@ -60,6 +60,7 @@ class UserLogin(APIView):
         u = User.objects.filter(email=email, password=password)
 
         # TODO: better way to check (for 1), also send back token***
+        # TODO: Delete from Auth token on logout
         if len(u) < 1:  
             return Response([{"error": "User doesn't exist"}], status=status.HTTP_400_BAD_REQUEST)
 
@@ -70,7 +71,7 @@ class UserLogin(APIView):
         return Response([{"token": user_token.key}], status=status.HTTP_200_OK)
 
 """
-    Logging out
+    Logging out    #TODO: Change serializer?
 """
 class UserLogout(APIView):
     def post(self, request, format=None):
@@ -88,3 +89,20 @@ class UserLogout(APIView):
         
         except Token.DoesNotExist:
             return Response([{"error": "no token deleted"}], status=status.HTTP_400_BAD_REQUEST)
+
+
+
+"""
+    TODO: Creating a Note
+"""
+class UserNoteCreate(APIView):
+    def post(self, request, format=None):
+        serializer_class = CreateUserNoteSerializer
+        serializer = serializer_class(data=request.data)
+ 
+        message = serializer.validated_data['message']
+        email = serializer.validated_data['email']
+
+        # TODO: get user ID using token (SQL), geneerate note ID
+        
+        return

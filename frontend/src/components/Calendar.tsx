@@ -1,64 +1,53 @@
 const Calendar = (): JSX.Element => {
+    const currentDate = new Date();
+    const daysOfMonth = [];
+    let currentDay = currentDate.getDay();
+    let currentDayOfMonth = currentDate.getDate();
 
-    //TODO: get Calendar with days right.
+    // To get the first day of the month, as number
+    while (currentDayOfMonth != 1){
+      currentDayOfMonth = currentDayOfMonth - 1;
+
+      currentDay = currentDay - 1;
+
+      if (currentDay < 0) {
+        currentDay = 6;
+      }
+    }
+
+    // TODO: Function to get the number of days in the month
+    const monthDays = () => {
+      return new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+    } 
+
+    let daysInMonth = monthDays();
+    let dayNumber = 2;
+
+    // To get number of days in an array
+    while(dayNumber <= daysInMonth) {
+      daysOfMonth.push(dayNumber);
+      dayNumber++;
+    }
+
+
+    // TODO: function to add note to a day
+    const test = () => {
+      alert("clicked");
+      return 
+    } 
+
     return (
-      <div id="calendarContainer">
-        <table id="calendar">
-            <tr id="dayNames">
-                <th>Sunday</th>
-                <th>Monday</th>
-                <th>Tuesday</th>
-                <th>Wednesday</th>
-                <th>Thursday</th>
-                <th>Friday</th>
-                <th>Saturday</th>
-            </tr>
-            <tr className = "countedDays">
-                <td>1</td>
-                <td>2</td>
-                <td>3</td>
-                <td>4</td>
-                <td>5</td>
-                <td>6</td>
-                <td>7</td>
-            </tr>
-            <tr className = "countedDays">
-                <td>8</td>
-                <td>9</td>
-                <td>10</td>
-                <td>11</td>
-                <td>12</td>
-                <td>13</td>
-                <td>14</td>
-            </tr>
-            <tr className = "countedDays">
-                <td>15</td>
-                <td>16</td>
-                <td>17</td>
-                <td>18</td>
-                <td>19</td>
-                <td>20</td>
-                <td>21</td>
-            </tr>
-            <tr className = "countedDays">
-                <td>22</td>
-                <td>23</td>
-                <td>24</td>
-                <td>25</td>
-                <td>26</td>
-                <td>27</td>
-                <td>28</td>
-            </tr>
-            <tr className = "countedDays">
-                <td>29</td>
-                <td>30</td>
-                <td>31</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-        </table>
+      <div className="calendarContainer">
+        <div className="calendarDays">Sunday</div>
+        <div className="calendarDays">Monday</div>
+        <div className="calendarDays">Tuesday</div>
+        <div className="calendarDays">Wednesday</div>
+        <div className="calendarDays">Thursday</div>
+        <div className="calendarDays">Friday</div>
+        <div className="calendarDays">Saturday</div>
+        <div className="numberedDays" style={{gridColumnStart:currentDay+1}}>1</div>
+        {daysOfMonth.map((day, index) =>
+          <div className="numberedDays" onClick={test} key={index}>{day}</div>)}
       </div>
     );
   }

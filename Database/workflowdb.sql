@@ -6,3 +6,11 @@ CREATE TABLE public.user (
     password varchar(50),
     PRIMARY KEY (user_id)
 );
+
+CREATE TABLE public.user_note (
+    note_id int,
+    message varchar(255),
+    date_created date,
+    user_id int references public.user(user_id),
+    primary key (user_id, note_id)
+);

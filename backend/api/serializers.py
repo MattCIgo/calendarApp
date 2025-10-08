@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from.models import User
+from .models import User, UserNote
 
 """
 user Model Serializers
@@ -20,3 +20,17 @@ class LoginUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('email', 'password')
+
+
+"""
+User Note Model Serializers
+"""
+class UserNoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserNote
+        fields = ('note_id', 'message', 'date_created', 'user_id')
+
+class CreateUserNoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserNote
+        fields = ('message')
