@@ -1,3 +1,6 @@
+import React from "react";
+import { NonIndexRouteObject } from "react-router-dom";
+
 const Calendar = (): JSX.Element => {
     const currentDate = new Date();
     const daysOfMonth = [];
@@ -15,7 +18,7 @@ const Calendar = (): JSX.Element => {
       }
     }
 
-    // TODO: Function to get the number of days in the month
+    // Function to get the number of days in the month
     const monthDays = () => {
       return new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
     } 
@@ -29,10 +32,36 @@ const Calendar = (): JSX.Element => {
       dayNumber++;
     }
 
+    // function to delete div
+    // TODO: remove from this file and make it's own component?
+    function deleteDiv(element: HTMLButtonElement) {
+      // Get the parent element (the deletable div)
+      let parentDiv: HTMLDivElement | null = element.parentNode as HTMLDivElement | null;
+
+      // Remove the parent div from the DOM
+      if (parentDiv) {
+        parentDiv.remove();
+      }
+
+      return
+    }
 
     // TODO: function to add note to a day
     const test = () => {
-      alert("clicked");
+      let popUpDiv = document.createElement('div');  
+      popUpDiv.className = 'popUpDiv';  
+
+      let popUpButton = document.createElement('button');
+      popUpButton.className = 'popUpButton';
+      popUpButton.textContent = 'X';
+      popUpButton.onclick = () => deleteDiv(popUpButton);
+
+      // Stops multiple new Divs from popping up (better way to do this?)
+      if (!document.getElementsByClassName('popUpDiv')[0]) {
+        document.getElementsByClassName('calendarContainer')[0].appendChild(popUpDiv);
+        document.getElementsByClassName('popUpDiv')[0].appendChild(popUpButton);
+      }
+
       return 
     } 
 
@@ -45,7 +74,7 @@ const Calendar = (): JSX.Element => {
         <div className="calendarDays">Thursday</div>
         <div className="calendarDays">Friday</div>
         <div className="calendarDays">Saturday</div>
-        <div className="numberedDays" style={{gridColumnStart:currentDay+1}}>1</div>
+        <div className="numberedDays" onClick={test} style={{gridColumnStart:currentDay+1}}>1</div>
         {daysOfMonth.map((day, index) =>
           <div className="numberedDays" onClick={test} key={index}>{day}</div>)}
       </div>
