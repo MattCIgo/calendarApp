@@ -51,15 +51,40 @@ const Calendar = (): JSX.Element => {
       let popUpDiv = document.createElement('div');  
       popUpDiv.className = 'popUpDiv';  
 
-      let popUpButton = document.createElement('button');
-      popUpButton.className = 'popUpButton';
-      popUpButton.textContent = 'X';
-      popUpButton.onclick = () => deleteDiv(popUpButton);
+      let popUpExitButton = document.createElement('button');
+      popUpExitButton.className = 'popUpExitButton';
+      popUpExitButton.textContent = 'X';
+      popUpExitButton.onclick = () => deleteDiv(popUpExitButton)
+
+      // TODO: for attribute?
+      let labelNoteBox = document.createElement('label');
+      labelNoteBox.id = 'labelNoteBox';
+      labelNoteBox.htmlFor = 'createNoteTextBox';
+      labelNoteBox.textContent = 'Enter Note?';
+
+      let createNoteTextBox = document.createElement('textarea');
+      createNoteTextBox.className = 'createNoteTextBox';
+      createNoteTextBox.setAttribute('placeholder', 'Enter Note...');
+
+      // TOOO: onclick save valuie in text area to array? send to server
+      // TODO: save time note created at
+      let popUpAcceptButton = document.createElement('button');
+      popUpAcceptButton.className = 'popUpAcceptButton';
+      popUpAcceptButton.textContent = 'Accept';
+
+      let popUpCancelButton = document.createElement('button');
+      popUpCancelButton.className = 'popUpCancelButton';
+      popUpCancelButton.textContent = 'Cancel';
+      popUpCancelButton.onclick = () => deleteDiv(popUpCancelButton);
 
       // Stops multiple new Divs from popping up (better way to do this?)
       if (!document.getElementsByClassName('popUpDiv')[0]) {
         document.getElementsByClassName('calendarContainer')[0].appendChild(popUpDiv);
-        document.getElementsByClassName('popUpDiv')[0].appendChild(popUpButton);
+        document.getElementsByClassName('popUpDiv')[0].appendChild(popUpExitButton);
+        document.getElementsByClassName('popUpDiv')[0].appendChild(labelNoteBox);
+        document.getElementsByClassName('popUpDiv')[0].appendChild(createNoteTextBox);
+        document.getElementsByClassName('popUpDiv')[0].appendChild(popUpAcceptButton);
+        document.getElementsByClassName('popUpDiv')[0].appendChild(popUpCancelButton);
       }
 
       return 
