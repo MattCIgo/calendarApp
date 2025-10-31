@@ -39,16 +39,19 @@ const Signuppage = (): JSX.Element => {
         "email" : email
       }),
     }).then(response => {
-        if(response.ok) {
-          console.log("User Created");
-        } else {
-          //TODO: get more specific error from backend
-          throw new Error("Something went wrong");
+        if(!response.ok) {
+          return response.json().then(error => {
+            throw new Error(error.error);
+          })
         }
-      }).catch((error) =>{
-        // TODO: parse error message/ how to replaces email with default object to access error? for loop?
-        alert(error.message);
-      }
+
+        return response.json();
+    }).then(data =>{
+      alert(data.message);
+    }).catch((error) =>{
+      // TODO: parse error message
+      alert(error);
+    }
     )
   } 
   

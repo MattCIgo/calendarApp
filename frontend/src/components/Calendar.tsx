@@ -1,11 +1,34 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { NonIndexRouteObject } from "react-router-dom";
 
 const Calendar = (): JSX.Element => {
+    const [notes, setNotes] = useState(null);
+    const token = localStorage.getItem('token');
     const currentDate = new Date();
     const daysOfMonth = [];
     let currentDay = currentDate.getDay();
     let currentDayOfMonth = currentDate.getDate();
+
+    // TODO: get the initial notes from server
+    useEffect (() => {
+      fetch('http://localhost:8000/notes', {
+        method: 'GET',
+        headers: { "Content-Type" : "application/json",
+          "Authorization": `Token ${token}`,
+         },
+        }).then(response => {
+          if(response.ok) {
+            console.log("Notes received");
+          } else {
+            //TODO: get more specific error from backend
+            throw new Error("Something went wrong");
+          }
+        }).catch((error) =>{
+          // TODO: parse error message/ how to replaces email with default object to access error? for loop?
+          alert(error.message);
+      })
+
+    }, [])
 
     // To get the first day of the month, as number
     while (currentDayOfMonth != 1){
@@ -19,6 +42,7 @@ const Calendar = (): JSX.Element => {
     }
 
     // Function to get the number of days in the month
+    // TODO: is this necessary?
     const monthDays = () => {
       return new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
     } 
@@ -46,7 +70,37 @@ const Calendar = (): JSX.Element => {
       return
     }
 
-    // TODO: function to add note to a day
+    // function to create Note
+    // TODO: remove from this file and make it's own component?
+    function createNote(message: String) {
+      // Get the parent element (the deletable div)
+
+      fetch('http://localhost:8000/notes', {
+        method: 'POST',
+        headers: { "Content-Type" : "application/json",
+          "Authorization": `Token ${token}`,
+        },
+        body: JSON.stringify({"message" : message,
+        }),
+        }).then(response => {
+          if(!response.ok) {
+            return response.json().then(error => {
+              throw new Error(error.error);
+            })
+          }
+
+          return response.json();
+        }).then(data => {
+          console.log(data.message);
+        }).catch((error) =>{
+          // TODO: parse error message/ how to replaces email with default object to access error? for loop?
+          alert(error);
+      })
+
+      return
+    }
+
+    // TODO: function to add note to a day, rename function
     const test = () => {
       let popUpDiv = document.createElement('div');  
       popUpDiv.className = 'popUpDiv';  
@@ -71,6 +125,7 @@ const Calendar = (): JSX.Element => {
       let popUpAcceptButton = document.createElement('button');
       popUpAcceptButton.className = 'popUpAcceptButton';
       popUpAcceptButton.textContent = 'Accept';
+      popUpAcceptButton.onclick = () => createNote(createNoteTextBox.value);
 
       let popUpCancelButton = document.createElement('button');
       popUpCancelButton.className = 'popUpCancelButton';

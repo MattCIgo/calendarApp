@@ -11,9 +11,9 @@ const Navbar = (): JSX.Element => {
 
     fetch('http://localhost:8000/logout', {
       method: 'POST',
-      headers: { "Content-Type" : "application/json" },
-      body: JSON.stringify({"token" : token,
-      }),
+      headers: { "Content-Type" : "application/json",
+          "Authorization": `Token ${token}`,
+         },
     }).then(response => {
       if (response.ok) {
         localStorage.removeItem('token');

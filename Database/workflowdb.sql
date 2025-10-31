@@ -7,10 +7,11 @@ CREATE TABLE public.user (
     PRIMARY KEY (user_id)
 );
 
+/*Update table*/
 CREATE TABLE public.user_note (
-    note_id int,
+    note_id int primary key,
     message varchar(255),
-    date_created date,
+    date_created TIMESTAMPTZ not null default now(),
     user_id int references public.user(user_id),
     primary key (user_id, note_id)
 );
