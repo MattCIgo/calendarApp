@@ -1,15 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { NonIndexRouteObject } from "react-router-dom";
+import { json, NonIndexRouteObject } from "react-router-dom";
 
 const Calendar = (): JSX.Element => {
-    const [notes, setNotes] = useState(null);
+    const [notes, setNotes]  = useState<Note[] | null>([]);
     const token = localStorage.getItem('token');
     const currentDate = new Date();
     const daysOfMonth = [];
     let currentDay = currentDate.getDay();
     let currentDayOfMonth = currentDate.getDate();
 
-    // TODO: get the initial notes from server
+    interface Note {
+      [key: number]: any; // needed for typescript indexing ( need string or number etc???)
+      pk: number,
+      model: string,
+      fields: {
+        user_id: number,
+        message: string,
+        date_created: Date,
+        date: Date,
+      }
+    }
+
+    // TODO: get the initial notes from server, sending request twice??? running twice???
     useEffect (() => {
       fetch('http://localhost:8000/notes', {
         method: 'GET',
@@ -23,12 +35,37 @@ const Calendar = (): JSX.Element => {
             //TODO: get more specific error from backend
             throw new Error("Something went wrong");
           }
+
+          return response.json();
+        }).then(data => {
+          // TODO: parse as js object, should be better way???
+          const jsonString = JSON.parse(data);
+          setNotes(jsonString);
         }).catch((error) =>{
           // TODO: parse error message/ how to replaces email with default object to access error? for loop?
           alert(error.message);
       })
-
     }, [])
+
+    // Function to get full date of current Day
+    function getCurrentFullDate(): string {
+      const year = currentDate.getFullYear().toString();
+      const day = currentDate.getDate().toString();
+      const month = (currentDate.getMonth() + 1).toString();
+
+      const newDate = year + "-" + month + "-" + day;
+      return newDate
+    }
+
+    // get the full date with day passed as parameter
+    function getFullDate(day: string): string {
+      const year = currentDate.getFullYear().toString();
+      const month = (currentDate.getMonth() + 1).toString();
+      
+      const newDate = year + "-" + month + "-" + day;
+
+      return newDate;
+    }
 
     // To get the first day of the month, as number
     while (currentDayOfMonth != 1){
@@ -47,6 +84,7 @@ const Calendar = (): JSX.Element => {
       return new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
     } 
 
+    // ....
     let daysInMonth = monthDays();
     let dayNumber = 2;
 
@@ -56,7 +94,7 @@ const Calendar = (): JSX.Element => {
       dayNumber++;
     }
 
-    // function to delete div
+    // function to delete div/ exit button on divs
     // TODO: remove from this file and make it's own component?
     function deleteDiv(element: HTMLButtonElement) {
       // Get the parent element (the deletable div)
@@ -72,8 +110,12 @@ const Calendar = (): JSX.Element => {
 
     // function to create Note
     // TODO: remove from this file and make it's own component?
-    function createNote(message: String) {
-      // Get the parent element (the deletable div)
+    function createNote(message: String, day: number, year: number, month: number) {
+      const date: string = year + "-" + month + "-" + day;
+
+      if (message.length === 0) {
+        return alert("Type a Message");
+      }
 
       fetch('http://localhost:8000/notes', {
         method: 'POST',
@@ -81,6 +123,7 @@ const Calendar = (): JSX.Element => {
           "Authorization": `Token ${token}`,
         },
         body: JSON.stringify({"message" : message,
+          "date" : date,
         }),
         }).then(response => {
           if(!response.ok) {
@@ -93,15 +136,45 @@ const Calendar = (): JSX.Element => {
         }).then(data => {
           console.log(data.message);
         }).catch((error) =>{
-          // TODO: parse error message/ how to replaces email with default object to access error? for loop?
           alert(error);
       })
 
       return
     }
 
-    // TODO: function to add note to a day, rename function
-    const test = () => {
+    // create div that shows number of notes for a day
+    // TODO: update on createNote, rerun function?
+    const showNoteNumberDiv = (day: number): JSX.Element => {
+      // TODO: get all notes that have the same date as date passed 
+      let dateNotesArray: any[] = [];
+      let noteNumber = 0;
+      let calendarDate =  new Date(getFullDate(day.toString()));
+
+      //TODO: Change Note model to hold day of note too not just date created....********
+      if (notes) {  
+        notes.forEach((note, index) => {
+          let noteDate = new Date(Date.parse(notes[index].fields.date.toString()));
+
+          // if date of note is equal to note of this day then add it to array
+          if(noteDate.toDateString() === calendarDate.toDateString()) {
+            dateNotesArray.push(note);
+            noteNumber++;
+          }
+        })
+      }
+
+      // tabindex allows to use focus on child divs
+      return (
+        <div className="noteNumber" title= 'Number of Notes' tabIndex={0}> 
+          {noteNumber}
+          <div className="showNotes">HIHIGFAFg</div>
+        </div>
+      )
+    }
+
+    // popup to add not to a day
+    // TODO: make so it returns JSX element, functions should be actual html
+    const createNoteDiv = (day: number) => {
       let popUpDiv = document.createElement('div');  
       popUpDiv.className = 'popUpDiv';  
 
@@ -120,19 +193,17 @@ const Calendar = (): JSX.Element => {
       createNoteTextBox.className = 'createNoteTextBox';
       createNoteTextBox.setAttribute('placeholder', 'Enter Note...');
 
-      // TOOO: onclick save valuie in text area to array? send to server
-      // TODO: save time note created at
       let popUpAcceptButton = document.createElement('button');
       popUpAcceptButton.className = 'popUpAcceptButton';
       popUpAcceptButton.textContent = 'Accept';
-      popUpAcceptButton.onclick = () => createNote(createNoteTextBox.value);
+      popUpAcceptButton.onclick = () => createNote(createNoteTextBox.value, day, currentDate.getFullYear(), currentDate.getMonth() + 1);
 
       let popUpCancelButton = document.createElement('button');
       popUpCancelButton.className = 'popUpCancelButton';
       popUpCancelButton.textContent = 'Cancel';
       popUpCancelButton.onclick = () => deleteDiv(popUpCancelButton);
 
-      // Stops multiple new Divs from popping up (better way to do this?)
+      // Stops multiple new Divs from popping up (better way to do this?) makes part of dom
       if (!document.getElementsByClassName('popUpDiv')[0]) {
         document.getElementsByClassName('calendarContainer')[0].appendChild(popUpDiv);
         document.getElementsByClassName('popUpDiv')[0].appendChild(popUpExitButton);
@@ -154,9 +225,18 @@ const Calendar = (): JSX.Element => {
         <div className="calendarDays">Thursday</div>
         <div className="calendarDays">Friday</div>
         <div className="calendarDays">Saturday</div>
-        <div className="numberedDays" onClick={test} style={{gridColumnStart:currentDay+1}}>1</div>
+        <div className="numberedDays" style={{gridColumnStart:currentDay+1, backgroundColor: 1 === currentDate.getDate() 
+          ? 'rgba(112, 108, 108, 0.8)': 'rgba(255, 255, 255, 0.8)'}}>
+            1 
+            {showNoteNumberDiv(1)}  
+            <button className="createNoteButton"  onClick= {() => createNoteDiv(1)}>Create Note</button>
+        </div>
         {daysOfMonth.map((day, index) =>
-          <div className="numberedDays" onClick={test} key={index}>{day}</div>)}
+        <div className="numberedDays" style={{backgroundColor: day === currentDate.getDate() 
+          ? 'rgba(112, 108, 108, 0.8)': 'rgba(255, 255, 255, 0.8)'}} key={index}>
+            {day}{showNoteNumberDiv(day)}
+          <button className="createNoteButton"  onClick= {() => createNoteDiv(day)}>Create Note</button>
+        </div>)}
       </div>
     );
   }

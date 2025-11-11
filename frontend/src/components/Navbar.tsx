@@ -9,6 +9,7 @@ const Navbar = (): JSX.Element => {
   const handleLogout = (e: React.ChangeEvent<any>) => {
     e.preventDefault();
 
+    // TODO: handle logout better, don't really need an error, just logout
     fetch('http://localhost:8000/logout', {
       method: 'POST',
       headers: { "Content-Type" : "application/json",
@@ -25,6 +26,8 @@ const Navbar = (): JSX.Element => {
           navigate("/", { replace: true});
         }
       } else {
+        localStorage.removeItem('token');
+        navigate("/", { replace: true});
         throw new Error("Something went wrong");
       }
     }).catch((error) =>{
