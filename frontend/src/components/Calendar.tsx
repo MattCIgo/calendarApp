@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { MouseEvent, useState, useEffect } from "react";
 import { json, NonIndexRouteObject } from "react-router-dom";
 
 const Calendar = (): JSX.Element => {
     const [notes, setNotes]  = useState<Note[] | null>([]);
+    const [textareaValue, setTextareaValue] = useState<string>(''); // TODO: rename to more descriptive variables
+    const [dayvalue, setDayValue] = useState<number>();
     const token = localStorage.getItem('token');
     const currentDate = new Date();
     const daysOfMonth = [];
@@ -96,13 +98,15 @@ const Calendar = (): JSX.Element => {
 
     // function to delete div/ exit button on divs
     // TODO: remove from this file and make it's own component?
-    function deleteDiv(element: HTMLButtonElement) {
+    function deleteDiv(e: MouseEvent) {
       // Get the parent element (the deletable div)
-      let parentDiv: HTMLDivElement | null = element.parentNode as HTMLDivElement | null;
+      const clickElement = e.target as HTMLElement;
+      let parentDiv: HTMLDivElement | null = clickElement.parentNode as HTMLDivElement | null;
 
       // Remove the parent div from the DOM
       if (parentDiv) {
         parentDiv.remove();
+        setTextareaValue('');
       }
 
       return
@@ -110,8 +114,12 @@ const Calendar = (): JSX.Element => {
 
     // function to create Note
     // TODO: remove from this file and make it's own component?
-    function createNote(message: String, day: number, year: number, month: number) {
+    function createNote(day: number, year: number, month: number) {
+      //TODO: day still is wrong???
+      console.log(day);
       const date: string = year + "-" + month + "-" + day;
+      let message = textareaValue;
+      setTextareaValue('');
 
       if (message.length === 0) {
         return alert("Type a Message");
@@ -146,76 +154,69 @@ const Calendar = (): JSX.Element => {
     // TODO: update on createNote, rerun function?
     const showNoteNumberDiv = (day: number): JSX.Element => {
       // TODO: get all notes that have the same date as date passed 
+      console.log(day);
       let dateNotesArray: any[] = [];
       let noteNumber = 0;
-      let calendarDate =  new Date(getFullDate(day.toString()));
+      let calendarDate =  getFullDate(day.toString());
 
-      //TODO: Change Note model to hold day of note too not just date created....********
+      //TODO: day is wrong when being passed to createNote... problem with on change is reloading div every type
+      //TODO: this function is being called when typing in text area of create note... fix
       if (notes) {  
-        notes.forEach((note, index) => {
-          let noteDate = new Date(Date.parse(notes[index].fields.date.toString()));
+        notes.map((note) => {
+          let noteDate = note.fields.date.toString()
+          console.log(noteDate);
+          console.log(noteDate + " and " + calendarDate);
 
           // if date of note is equal to note of this day then add it to array
-          if(noteDate.toDateString() === calendarDate.toDateString()) {
+          if(noteDate === calendarDate) {
             dateNotesArray.push(note);
             noteNumber++;
           }
         })
       }
 
-      // tabindex allows to use focus on child divs
       return (
         <div className="noteNumber" title= 'Number of Notes' tabIndex={0}> 
           {noteNumber}
-          <div className="showNotes">HIHIGFAFg</div>
-        </div>
+          <div className="showNotes">
+            HIHIGFAFg
+            <div className="showNotesChild">fdsafadsg</div>
+            <button>dfadf</button>
+          </div>
+        </div>  
       )
     }
 
-    // popup to add not to a day
-    // TODO: make so it returns JSX element, functions should be actual html
-    const createNoteDiv = (day: number) => {
-      let popUpDiv = document.createElement('div');  
-      popUpDiv.className = 'popUpDiv';  
+    // popup to add note to a day
+    const noteDiv = (day: number): JSX.Element => {
 
-      let popUpExitButton = document.createElement('button');
-      popUpExitButton.className = 'popUpExitButton';
-      popUpExitButton.textContent = 'X';
-      popUpExitButton.onclick = () => deleteDiv(popUpExitButton)
+      //TODO: GET CORRECT DAY, WORKS FOR NOTENUMBERDIV, HOW TO GET SPECIFIC DATE,
+      //TODO: POTENTIALLY HAVE DIV WITH EXACT DATE THEN USE THAT???
 
-      // TODO: for attribute?
-      let labelNoteBox = document.createElement('label');
-      labelNoteBox.id = 'labelNoteBox';
-      labelNoteBox.htmlFor = 'createNoteTextBox';
-      labelNoteBox.textContent = 'Enter Note?';
-
-      let createNoteTextBox = document.createElement('textarea');
-      createNoteTextBox.className = 'createNoteTextBox';
-      createNoteTextBox.setAttribute('placeholder', 'Enter Note...');
-
-      let popUpAcceptButton = document.createElement('button');
-      popUpAcceptButton.className = 'popUpAcceptButton';
-      popUpAcceptButton.textContent = 'Accept';
-      popUpAcceptButton.onclick = () => createNote(createNoteTextBox.value, day, currentDate.getFullYear(), currentDate.getMonth() + 1);
-
-      let popUpCancelButton = document.createElement('button');
-      popUpCancelButton.className = 'popUpCancelButton';
-      popUpCancelButton.textContent = 'Cancel';
-      popUpCancelButton.onclick = () => deleteDiv(popUpCancelButton);
-
-      // Stops multiple new Divs from popping up (better way to do this?) makes part of dom
-      if (!document.getElementsByClassName('popUpDiv')[0]) {
-        document.getElementsByClassName('calendarContainer')[0].appendChild(popUpDiv);
-        document.getElementsByClassName('popUpDiv')[0].appendChild(popUpExitButton);
-        document.getElementsByClassName('popUpDiv')[0].appendChild(labelNoteBox);
-        document.getElementsByClassName('popUpDiv')[0].appendChild(createNoteTextBox);
-        document.getElementsByClassName('popUpDiv')[0].appendChild(popUpAcceptButton);
-        document.getElementsByClassName('popUpDiv')[0].appendChild(popUpCancelButton);
-      }
-
-      return 
+      return (
+        <div id="popUpDiv" style={{display: "none"}}>
+          <button className="popUpExitButton" onClick= {(e) => deleteDiv(e)}>X</button>
+          <label id="labelNoteBox" htmlFor="createNoteTextBox">Enter Note?</label>
+          <textarea id="createNoteTextBox" placeholder="Enter Note..."></textarea>
+          <button className="popUpAcceptButton" onClick= {() => 
+            createNote(day, currentDate.getFullYear(), currentDate.getMonth() + 1)}>Accept</button>
+          <button className="popUpCancelButton" onClick= {(e) => deleteDiv(e)}>Cancel</button>
+        </div>
+      )
     } 
 
+    // popup to add note to a day, should this go within noteDiv
+    const showNoteDiv = () => {
+      let showableDiv: HTMLElement | null = document.getElementById("popUpDiv") as HTMLElement;
+
+      if (showableDiv.style.display === "none") {
+        showableDiv.style.display = "block";
+      } else {
+        showableDiv.style.display = "none";
+      }
+    } 
+
+    // TODO: make html more readable
     return (
       <div className="calendarContainer">
         <div className="calendarDays">Sunday</div>
@@ -225,17 +226,20 @@ const Calendar = (): JSX.Element => {
         <div className="calendarDays">Thursday</div>
         <div className="calendarDays">Friday</div>
         <div className="calendarDays">Saturday</div>
-        <div className="numberedDays" style={{gridColumnStart:currentDay+1, backgroundColor: 1 === currentDate.getDate() 
+        <div id="numberedDays" style={{gridColumnStart:currentDay+1, backgroundColor: 1 === currentDate.getDate() 
           ? 'rgba(112, 108, 108, 0.8)': 'rgba(255, 255, 255, 0.8)'}}>
             1 
-            {showNoteNumberDiv(1)}  
-            <button className="createNoteButton"  onClick= {() => createNoteDiv(1)}>Create Note</button>
+            {showNoteNumberDiv(1)}
+            {noteDiv(1)}
+            <button className="createNoteButton"  onClick= {() => showNoteDiv()}>Create Note</button>
         </div>
         {daysOfMonth.map((day, index) =>
-        <div className="numberedDays" style={{backgroundColor: day === currentDate.getDate() 
+        <div id="numberedDays" style={{backgroundColor: day === currentDate.getDate() 
           ? 'rgba(112, 108, 108, 0.8)': 'rgba(255, 255, 255, 0.8)'}} key={index}>
-            {day}{showNoteNumberDiv(day)}
-          <button className="createNoteButton"  onClick= {() => createNoteDiv(day)}>Create Note</button>
+            {day}
+            {showNoteNumberDiv(day)}
+            {noteDiv(day)}
+            <button className="createNoteButton"  onClick= {() => showNoteDiv()}>Create Note</button>
         </div>)}
       </div>
     );

@@ -59,6 +59,7 @@ class UserLogin(APIView):
 
         if not u.exists():  
             return Response([{"error": "User doesn't exist"}], status=status.HTTP_400_BAD_REQUEST)
+        #TODO: create check for already active token, if already logged in then send to homepage?
 
         user_token = Token.objects.create(user=u[0])
 
@@ -82,7 +83,7 @@ class UserLogout(APIView):
 
 
 """
-    TODO: Creating a Note
+    Creating a Note
 """
 class UserNoteView(APIView):
     """ 
@@ -92,8 +93,7 @@ class UserNoteView(APIView):
         serializer = serializers.CreateUserNoteSerializer(data=request.data)
 
         try:
-            print(serializer.is_valid())  
-            print(serializer.errors)
+            serializer.is_valid()
             message = serializer.validated_data['message']
             date = serializer.validated_data['date']
             user_id = models.User.objects.get(user_id=request.user.user_id)
@@ -123,8 +123,6 @@ class UserNoteView(APIView):
         try:
             if request.user:
                 user_notes = models.UserNote.objects.filter(user_id=request.user.user_id)
-
-            print(user_notes)
 
             # TODO: better way to serialize???
             data = djangoserializers.serialize('json', user_notes)
