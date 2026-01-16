@@ -1,6 +1,5 @@
-// TODO: functions to add user to database/ hooks etc
-
 import { json } from "react-router-dom";
+import fall from '../images/fall.jpg'
 
 const Signuppage = (): JSX.Element => {
 
@@ -57,22 +56,35 @@ const Signuppage = (): JSX.Element => {
   
   return (
     <div className="signupContainer">
+      <img src={fall} id="backgroundImage"></img>
       <div className="signupBox">
-        <h1>Sign up to Create an Account</h1>
-          <form id="signupform">
-            <label style={{marginLeft: 100}}>First Name: </label>
-            <input className="signuplabel" type="text" id="firstname" name="firstname"></input><br/>
-            <label style={{marginLeft: 100}}>Last Name: </label>
-            <input className="signuplabel" type="text" id="lastname" name="lastname"></input><br/>
-            <label style={{marginLeft: 100}}>Email: </label>
-            <input className="signuplabel" type="text" id="email" name="email"></input><br/>
-            <label style={{marginLeft: 100}}>Password: </label>
-            <input className="signuplabel" type="text" id="signuppass" name="signuppass"></input><br/>
-            <label style={{marginLeft: 100}}>Re-enter Password: </label>
-            <input className="signuplabel" type="text" id="resignuppass" name="resignuppass"></input><br/>
-            <input style={{marginLeft: 200}} type="submit" id="signup" name="signup" value="Sign-up"
+        <div className="signupBoxContainer">
+          <h1>Sign up to Create an Account</h1>
+          <form>
+            <div id="firstNameDiv">
+              <label>First Name: </label>
+              <input type="text" id="firstname" name="firstname"></input><br/>
+            </div>
+            <div id="lastNameDiv">
+              <label>Last Name: </label>
+              <input type="text" id="lastname" name="lastname"></input><br/>
+            </div>
+            <div id="emailDiv">
+              <label>Email: </label>
+              <input type="text" id="email" name="email"></input><br/>
+            </div>
+            <div id="passwordDiv">
+              <label>Password: </label>
+              <input type="text" id="signuppass" name="signuppass"></input><br/>
+            </div>
+            <div id="repasswordDiv">
+              <label>Re-enter Password: </label>
+              <input type="text" id="resignuppass" name="resignuppass"></input><br/>
+            </div>
+            <input type="submit" id="signup" name="signup" value="Sign-up"
               onClick={(e)=>handleSignup(e)}></input>
           </form>
+        </div>     
       </div>
     </div>
   );

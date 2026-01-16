@@ -1,43 +1,126 @@
+import calendar from '../images/calendar.jpg'
+import calendarScreenShot from '../images/calendarScreenShot.png'
+import calendarScreenShot2 from '../images/calendarScreenShot2.png'
+import calendarScreenShot3 from '../images/calendarScreenShot3.png'
+import calendarScreenShot4 from '../images/calendarScreenShot4.png'
+import React from 'react'
 
+/** TODO: can't use image without import??? */
 const Homepage = (): JSX.Element => {
   const token = localStorage.getItem('token');
+  const tutorialImages: string[] = [calendarScreenShot, calendarScreenShot2, calendarScreenShot3, calendarScreenShot4]; // TODO: better way for this?
+  const tutorialDescription: string[][] = [['Check your Calendar', 'Go to the Calendar Page to check your personalized calendar and make updates and notes.'], 
+  ['Create and Check Notes', 'hihi'], ['Create a Note', 'hihihi'], ['Check Past Notes', 'hihihihi']];
+
+  // handle arrows of tutorial images
+  // TODO: this function can be made more reusable for other image loops, pass id's of elements
+  const tutorialImageHandler = (e: React.MouseEvent<HTMLDivElement>, direction: string) => {
+    const image = document.getElementById("tutorialImage") as HTMLImageElement;
+    const imageString = image.getAttribute('src');
+    const tutorialHeader = document.getElementById("tutorialHeader");
+    const tutorialParagraph = document.getElementById("tutorialDescription");
+
+    let index = 0;
+    // get the image index
+    while (index < tutorialImages.length) {
+      if (imageString === tutorialImages[index]) {
+        // only needed index
+        break;
+      }
+
+      index++;
+
+      if (index == tutorialImages.length) {
+        return console.log("Somerthing went Wrong in tutorialImageHandler");
+      }
+    }
+
+    if (image && tutorialHeader && tutorialParagraph) {
+      if (direction === "right") {
+        // if at end of array
+        if(index + 1 == tutorialImages.length) {
+          index = -1;
+        }
+
+        image.setAttribute('src', tutorialImages[index+1]);
+        tutorialHeader.textContent= tutorialDescription[index+1][0];
+        tutorialParagraph.textContent= tutorialDescription[index+1][1];
+      } else if (direction === "left") {
+        // if at begining of array
+        if (index - 1 < 0) {
+          index = tutorialImages.length;
+        }
+
+        image.setAttribute('src', tutorialImages[index-1]);
+        tutorialHeader.textContent= tutorialDescription[index-1][0];
+        tutorialParagraph.textContent= tutorialDescription[index-1][1];
+      }
+    }
+
+  }
 
   if (token) {
     return (
       <div className="homeContainer"> 
         <div className="intro">
+          <div className="introImage">
+            <img src={calendar} id="image-loop-1"></img>
+          </div>
           <div className="appDesc">
-            <h1>User Homepage</h1>
+            <h1>Keep Track of Your Schedule</h1>
             <p> Welcome to Userhome!</p>
           </div>
-          <div className="introImage">
-            <div className="image"></div>
+        </div>
+        <hr/>
+        <div className="tutorial">
+          <div className="tutorialText">
+            <h1 id="tutorialHeader">Check your Calendar</h1>
+            <p id="tutorialDescription">Go to the Calendar Page to check your personalized calendar and make updates and notes.</p>
+          </div>
+          <div className="tutorialImageDiv">
+            <img src={calendarScreenShot} id="tutorialImage"></img>
+            {/** TODO: container for arrows? */}
+            <div id="tutorialImageArrows">
+              <div id="tutorialImagesLeftArrow" onClick={(e) => tutorialImageHandler(e, "left")}>{'<'}</div>
+              <div id="tutorialImagesRightArrow" onClick={(e) => tutorialImageHandler(e, "right")}>{'>'}</div>
+            </div>
           </div>
         </div>
-
-        <div className="tutorial">
-
-        </div>
+        <hr/>
+        <div id="footer"></div>
       </div>
     );
   } else {
     return (
-      //TODO: Doesn't update to this on logout
-      <div className="homeContainer">
+      <div className="homeContainer"> 
         <div className="intro">
-          <div className="appDesc">
-            <h1>Calendar App</h1>
-            <p> Welcome to Calendar App!</p>
-          </div>
           <div className="introImage">
-            {/* image goes here */}
-            <div className="image"></div>
+            <img src={calendar} id="image-loop-1"></img>
+          </div>
+          <div className="appDesc">
+            <h1>Keep Track of Your Schedule</h1>
+            <p> Welcome to Userhome!</p>
           </div>
         </div>
+        <hr/>
         <div className="tutorial">
+          <div className="tutorialText">
+            <h1 id="tutorialHeader">Check your Calendar</h1>
+            <p id="tutorialDescription">Go to the Calendar Page to check your personalized calendar and make updates and notes.</p>
+          </div>
+          <div className="tutorialImageDiv">
+            <img src={calendarScreenShot} id="tutorialImage"></img>
+            {/** TODO: container for arrows? */}
+            <div id="tutorialImageArrows">
+              <div id="tutorialImagesLeftArrow" onClick={(e) => tutorialImageHandler(e, "left")}>{'<'}</div>
+              <div id="tutorialImagesRightArrow" onClick={(e) => tutorialImageHandler(e, "right")}>{'>'}</div>
+            </div>
+          </div>
         </div>
+        <hr/>
+        <div id="footer"></div>
       </div>
-    ); 
+    );
   }  
 }
   

@@ -46,6 +46,7 @@ class UserView(APIView):
 
 """
     Logging in
+    TODO: if user has correct credentials and token is already in then let them log in
 """
 class UserLogin(APIView):
     def post(self, request, format=None):
@@ -94,22 +95,33 @@ class UserNoteView(APIView):
 
         try:
             serializer.is_valid()
-            message = serializer.validated_data['message']
-            date = serializer.validated_data['date']
-            user_id = models.User.objects.get(user_id=request.user.user_id)
+            print(serializer.errors)
+            print(serializer.validated_data['method'])
 
-            '''
-            note_id = random.randint(100000000, 999999999)
+            if (serializer.validated_data['method'] == "createNote"):
+                message = serializer.validated_data['message']
+                date = serializer.validated_data['date']
+                user_id = models.User.objects.get(user_id=request.user.user_id)
 
-            # If note_id already exists then generate another id
-            while models.UserNote.objects.filter(note_id=note_id, user_id=user_id).exists():
-                note_id = random.randint(100000000, 999999999)
-            '''
+                new_note = models.UserNote(message=message, user_id=user_id, date = date)
+                new_note.save()
 
-            new_note = models.UserNote(message=message, user_id=user_id, date = date)
-            new_note.save()
+                return_note = djangoserializers.serialize('json', [new_note,])
 
-            return Response({"message": "Created note"}, status=status.HTTP_200_OK)
+                return Response([{"message": "Created Note", "return_note": return_note}], status=status.HTTP_200_OK)
+
+            elif (serializer.validated_data['method'] == "deleteNote"):
+                print(serializer.validated_data['note_id'])
+                user_id = models.User.objects.get(user_id=request.user.user_id)
+                note_id = serializer.validated_data['note_id']
+
+                note = models.UserNote.objects.get(note_id = note_id, user_id=user_id)
+                note.delete()
+
+                return Response({"message": "Deleted Note"}, status=status.HTTP_200_OK)
+
+            else: 
+                raise Exception("invalid method")           
 
         except Exception as e:
             print(e)
@@ -124,12 +136,10 @@ class UserNoteView(APIView):
             if request.user:
                 user_notes = models.UserNote.objects.filter(user_id=request.user.user_id)
 
-            # TODO: better way to serialize???
+            # TODO: better way to serialize??? custom ?
             data = djangoserializers.serialize('json', user_notes)
 
             return Response(data, status=status.HTTP_200_OK)
 
         except:
             return Response([{"error": "User not logged In or doesn't exist"}], status=status.HTTP_400_BAD_REQUEST)
-
-        

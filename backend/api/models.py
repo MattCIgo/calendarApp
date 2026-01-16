@@ -47,7 +47,7 @@ class UserManager(BaseUserManager):
 """
 class UserNote(models.Model):
     note_id = models.AutoField(primary_key=True)
-    message = models.CharField(max_length=255)
+    message = models.CharField(max_length=2000)
     date = models.DateField()
     date_created = models.DateTimeField(auto_now=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)

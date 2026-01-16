@@ -9,7 +9,6 @@ const Navbar = (): JSX.Element => {
   const handleLogout = (e: React.ChangeEvent<any>) => {
     e.preventDefault();
 
-    // TODO: handle logout better, don't really need an error, just logout
     fetch('http://localhost:8000/logout', {
       method: 'POST',
       headers: { "Content-Type" : "application/json",
@@ -28,7 +27,6 @@ const Navbar = (): JSX.Element => {
       } else {
         localStorage.removeItem('token');
         navigate("/", { replace: true});
-        throw new Error("Something went wrong");
       }
     }).catch((error) =>{
       alert(error.message);
@@ -36,25 +34,58 @@ const Navbar = (): JSX.Element => {
     )
   } 
 
+  const clickMenuFunction = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    let links = document.getElementById("links");
+
+    if (links && links.style.display === "block") {
+      links.style.display = "none";
+    } else {
+      if (links) {
+        links.style.display = "block";
+      }
+    }
+  }
+
+  window.addEventListener('resize', function() {
+    const screenWidth = window.innerWidth;
+    let links = document.getElementById("links");
+
+    if (screenWidth > 500 && links && links.style.display === "none") {
+      links.style.display = "block";
+    }
+
+    if (screenWidth < 500 && links && links.style.display === "block") {
+      links.style.display = "none";
+    } 
+  });
+
   if(token){
     return (
       <nav className="usernavbar">
-        <h1 id="title"><Link to="/">Workflow App</Link></h1>
-        <div className="links">
-          <Link to="/Calendar" style={{marginRight:30}}>Calendar</Link>
-          <Link to="/" style={{marginRight:30}}>Settings</Link>
+        <Link to="/" id="title">Workflow App</Link>
+        <div id="links">
+          <Link to="/Calendar">Calendar</Link>
+          <Link to="/">Settings</Link>
           <Link to="/" onClick={(e)=>handleLogout(e)}>Logout</Link>
         </div>
+
+        <a className="icon" onClick={(e) => clickMenuFunction(e)}>
+          <i className="fa fa-bars"></i>
+        </a>
       </nav>
     );
   } else {
     return (
       <nav className="navbar">
-        <h1 id="title"><Link to="/">Workflow App</Link></h1>
-        <div className="links">
-          <Link to="/signup" style={{marginRight:30}}>Sign up</Link>
+        <Link to="/" id="title">Workflow App</Link>
+        <div id="links">
           <Link to="/login">Login</Link>
+          <Link to="/signup">Sign up</Link>
         </div>
+
+        <a className="icon" onClick={(e) => clickMenuFunction(e)}>
+          <i className="fa fa-bars"></i>
+        </a>
       </nav>
     )
   }
