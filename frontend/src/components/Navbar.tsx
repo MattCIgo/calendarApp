@@ -62,10 +62,10 @@ const Navbar = (): JSX.Element => {
   if(token){
     return (
       <nav className="usernavbar">
-        <Link to="/" id="title">Workflow App</Link>
+        <Link to="/" id="title">Calendar App</Link>
         <div id="links">
           <Link to="/Calendar">Calendar</Link>
-          <Link to="/">Settings</Link>
+          <Link to="/Settings">Settings</Link>
           <Link to="/" onClick={(e)=>handleLogout(e)}>Logout</Link>
         </div>
 
@@ -77,7 +77,7 @@ const Navbar = (): JSX.Element => {
   } else {
     return (
       <nav className="navbar">
-        <Link to="/" id="title">Workflow App</Link>
+        <Link to="/" id="title">Calendar App</Link>
         <div id="links">
           <Link to="/login">Login</Link>
           <Link to="/signup">Sign up</Link>

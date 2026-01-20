@@ -37,6 +37,31 @@ const Calendarpage = (): JSX.Element => {
       <Calendar year={year} month={months[monthIndex]} monthNumber={monthIndex}/>
       <button id="leftCalendarButton" onClick={(e) => handleLeftButton(e)}>{'<'}</button>
       <button id="rightCalendarButton" onClick={(e) => handleRightButton(e)}>{'>'}</button>
+
+      <div id="searchNotesContainer">
+        <div id="searchBarNotesContainer">
+          <div id="searchBarContainer">
+            <input id="searchNotesInput" placeholder="Search Notes"></input>
+            <button className="searchButton">Search</button>
+          </div>
+          <div id="searchParametersContainer">
+            <h1>Dates:</h1>
+            <input placeholder="Enter Dates"></input>
+            <h1>Order By:</h1>
+            <div id="orderDropdown">Order By...
+              <div id="orderDropdownOptions">      
+                <div className="orderDropdownIndividualOption">Oldest</div>  
+                <div className="orderDropdownIndividualOption">Latest</div>
+                <div className="orderDropdownIndividualOption">Recency</div> 
+                <div className="orderDropdownIndividualOption">1</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="searchNotesResultsContainer">
+          <div id="searchResultsTable">RESULTS</div>
+        </div>
+      </div>
     </div>
   );
 }

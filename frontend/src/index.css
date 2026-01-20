@@ -423,6 +423,72 @@ body {
     }
   }
 
+  .homeCalendarContainer {
+    height: fit-content;
+    display: flex;
+    width: 100vw;
+
+    .calendarContainer {
+      height: 350px;
+      width: 55vw;
+      margin-bottom: 20px;
+      margin-top: 20px;
+
+      .calendarDays {
+        height: 25px;
+      }
+    }
+
+    #homeCalendarDesc {
+      display: inline-block;
+      width: 45vw;
+      height: 350px;
+
+      h1 { 
+        text-align: center;
+        color:#45A29E;
+      }
+
+      p {
+        text-align: center;
+        font-size: 20px;
+      }
+    }
+  }
+
+  @media screen and (max-width: 500px) {
+    .homeCalendarContainer {
+      height: fit-content;
+      display: block;
+      width: 100vw;
+
+      .calendarContainer {
+        height: 350px;
+        width: 98vw;
+
+        .calendarDays {
+          height: 25px;
+        }
+      }
+
+      #homeCalendarDesc {
+        display: inline-block;
+        width: 98vw;
+        height: 350px;
+
+        h1 { 
+          text-align: center;
+          color:#45A29E;
+        }
+
+        p {
+          text-align: center;
+          font-size: 20px;
+        }
+      }
+    }
+  }
+
   #footer {
     width: 100vw;
     height: 100px;
@@ -682,7 +748,6 @@ body {
 }
 
 
-
 /* Calendarpage CSS */
 /*TODO: navbar on calendarpage moves up alittle*/
 .calendarPageContainer {
@@ -749,6 +814,109 @@ body {
     margin-Bottom: 20px;
     font-size: 20px;
     border-radius: 10px;
+  }
+
+  #searchNotesContainer {
+    height: 500px;
+    width: 100vw;
+    display: flex;
+
+    #searchBarNotesContainer {
+      width: 45vw;
+      background-color: red;
+
+      #searchBarContainer {
+        display: flex;
+        height: fit-content;
+        align-items: center;
+        justify-content: center;
+        margin-top: 30px;
+
+        #searchNotesInput {
+          height: 35px;
+          width: 25vw;
+          max-width: 300px;
+          border-color: #1F2833;
+          border-top-left-radius: 20px;
+          border-bottom-left-radius: 20px;
+          border-right: none;
+          padding-left: 15px;
+        }
+
+        /*TODO: change button to magnifying glass on smaller screens*/
+        .searchButton {
+          background-color: #4b5968;
+          color:#45A29E;
+          height: 41px;
+          width: 7vw;
+          max-width: 100px;
+          border-color: #1F2833;
+          border-top-right-radius: 20px;
+          border-bottom-right-radius: 20px;
+          border-left: none;
+          margin-bottom: 0;
+          overflow: hidden;
+        }
+      }
+
+      /*TODO: change width*/
+      #searchParametersContainer {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        row-gap: 30px;
+        height: 20px;
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 10px;
+        
+        h1 {
+          font-size: 15px;
+          margin: 0;
+          color:#45A29E;
+        }
+
+        #orderDropdown {
+          background-color: #393c46;
+          width: 150px;
+          place-self: center;
+          text-align: center;
+          color:#45A29E;
+        }
+
+        #orderDropdownOptions {
+          display: none;
+          height: fit-content;
+          width: 100%;
+          background-color: green;
+          text-align: center;
+
+          .orderDropdownIndividualOption:hover {
+            background-color: blue;
+          } 
+          
+        }
+
+        #orderDropdown:hover #orderDropdownOptions {
+          display: block;
+        }
+      }
+    }
+
+    #searchNotesResultsContainer {
+      width: 55vw;
+      background-color: blue;
+
+      #searchResultsTable {
+        background-color: orange;
+        width: 49vw;
+        height: 450px;
+        margin-top: 25px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+      } 
+    }
   }
 }
 

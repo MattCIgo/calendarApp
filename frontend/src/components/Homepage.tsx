@@ -3,7 +3,8 @@ import calendarScreenShot from '../images/calendarScreenShot.png'
 import calendarScreenShot2 from '../images/calendarScreenShot2.png'
 import calendarScreenShot3 from '../images/calendarScreenShot3.png'
 import calendarScreenShot4 from '../images/calendarScreenShot4.png'
-import React from 'react'
+import React, {useState} from 'react'
+import Calendar from './Calendar'
 
 /** TODO: can't use image without import??? */
 const Homepage = (): JSX.Element => {
@@ -11,6 +12,12 @@ const Homepage = (): JSX.Element => {
   const tutorialImages: string[] = [calendarScreenShot, calendarScreenShot2, calendarScreenShot3, calendarScreenShot4]; // TODO: better way for this?
   const tutorialDescription: string[][] = [['Check your Calendar', 'Go to the Calendar Page to check your personalized calendar and make updates and notes.'], 
   ['Create and Check Notes', 'hihi'], ['Create a Note', 'hihihi'], ['Check Past Notes', 'hihihihi']];
+
+  // TODO: what to do with this???
+  const currentDate = new Date();
+  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  let [monthIndex, setMonthIndex] = useState(currentDate.getMonth());
+  let [year, setYear] = useState(currentDate.getFullYear());
 
   // handle arrows of tutorial images
   // TODO: this function can be made more reusable for other image loops, pass id's of elements
@@ -87,7 +94,17 @@ const Homepage = (): JSX.Element => {
           </div>
         </div>
         <hr/>
-        <div id="footer"></div>
+        <div className="homeCalendarContainer">
+          <Calendar year={year} month={months[monthIndex]} monthNumber={monthIndex}/>
+          <div id="homeCalendarDesc">
+            <h1 id="tutorialHeader">Calendar</h1>
+            <p id="tutorialDescription">Preview the Calendar here.</p>
+          </div>
+        </div>
+        <hr/>
+        <div id="footer">
+          <h1>Footer Info</h1>
+        </div>
       </div>
     );
   } else {
