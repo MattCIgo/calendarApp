@@ -823,7 +823,13 @@ body {
 
     #searchBarNotesContainer {
       width: 45vw;
-      background-color: red;
+
+      #searchNotesTitle {
+        text-align: center;
+        color:#45A29E;
+        font-size: 24px;
+        margin-top: 25px;
+      }
 
       #searchBarContainer {
         display: flex;
@@ -831,10 +837,11 @@ body {
         align-items: center;
         justify-content: center;
         margin-top: 30px;
+        margin-bottom: 30px;
 
         #searchNotesInput {
           height: 35px;
-          width: 25vw;
+          width: 60%;
           max-width: 300px;
           border-color: #1F2833;
           border-top-left-radius: 20px;
@@ -848,7 +855,7 @@ body {
           background-color: #4b5968;
           color:#45A29E;
           height: 41px;
-          width: 7vw;
+          width: 20%;
           max-width: 100px;
           border-color: #1F2833;
           border-top-right-radius: 20px;
@@ -857,64 +864,141 @@ body {
           margin-bottom: 0;
           overflow: hidden;
         }
+
+        .searchButton:hover {
+          background-color: #80a4c9;
+        }
+
+        .searchButton:active {
+          background-color: #cde2f7;
+        }
       }
 
       /*TODO: change width*/
       #searchParametersContainer {
         display: grid;
-        grid-template-columns: 1fr 3fr;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+        grid-template-rows: minmax();
         row-gap: 30px;
-        height: 20px;
-        width: fit-content;
+        height: fit-content;
+        width: 75%;
+        max-width: 350px;
+        min-width: 0;
         margin-left: auto;
         margin-right: auto;
-        margin-top: 10px;
+        margin-top: 20px;
         
-        h1 {
+        h2 {
           font-size: 15px;
           margin: 0;
           color:#45A29E;
         }
 
+        #enterStartDateInput {
+          width: 90%;
+          margin-left: auto;
+          margin-right: auto;
+          align-self: start;
+        }
+
+        #enterEndDateInput {
+          width: 90%;
+          margin-left: auto;
+          margin-right: auto;
+          align-self: start;
+        }
+        
         #orderDropdown {
+          position: relative;
           background-color: #393c46;
           width: 150px;
+          max-width: 66.7%;
           place-self: center;
           text-align: center;
           color:#45A29E;
+          border: 2px solid black;
+          border-radius: 15px;
+          cursor: pointer;
         }
 
+        #selectedSortOption {
+          font-weight: normal;
+        }
+
+        #orderDropdown:hover {
+          background-color: #585d6e;
+        }
+
+        /*TODO: should be li?*/
         #orderDropdownOptions {
+          position: relative;
           display: none;
           height: fit-content;
           width: 100%;
-          background-color: green;
+          background-color: #3a3e49;
           text-align: center;
+          border-bottom-right-radius: 15px;
+          border-bottom-left-radius: 15px;
+          cursor: pointer;
 
           .orderDropdownIndividualOption:hover {
-            background-color: blue;
-          } 
-          
+            background-color: #585d6e;
+          }   
+        }
+
+        #lastOrderOption {
+          border-bottom-right-radius: 15px;
+          border-bottom-left-radius: 15px;
         }
 
         #orderDropdown:hover #orderDropdownOptions {
           display: block;
         }
       }
+
+      @media screen and (max-width: 650px) {
+        #searchParametersContainer {
+          display: block;
+          text-align: center;
+        }
+
+        #enterStartDateInput {
+          width: 66.7%;
+          margin-left: 0;
+          margin-bottom: 15px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        #enterEndDateInput {
+          width: 66.7%;
+          margin-left: 0;
+          margin-bottom: 15px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        #orderDropdown {
+          margin-top: 1px;
+          margin-left: auto;
+          margin-right: auto;
+          overflow: hidden;
+        }
+      }
     }
 
     #searchNotesResultsContainer {
       width: 55vw;
-      background-color: blue;
 
       #searchResultsTable {
-        background-color: orange;
+        background-color: #393c46;
         width: 49vw;
         height: 450px;
         margin-top: 25px;
         margin-left: auto;
         margin-right: auto;
         text-align: center;
+        border-radius: 20px;
       } 
     }
   }
