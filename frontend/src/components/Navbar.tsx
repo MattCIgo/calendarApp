@@ -1,38 +1,10 @@
-import { Link } from 'react-router-dom';
+import { Link, unstable_HistoryRouter } from 'react-router-dom';
+import {logout} from './utils.tsx';
 import { useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = (): JSX.Element => {
-  const navigate = useNavigate();
   const token = localStorage.getItem('token');
-  let currentLocation = useLocation().pathname;
-
-  const handleLogout = (e: React.ChangeEvent<any>) => {
-    e.preventDefault();
-
-    fetch('http://localhost:8000/logout', {
-      method: 'POST',
-      headers: { "Content-Type" : "application/json",
-          "Authorization": `Token ${token}`,
-         },
-    }).then(response => {
-      if (response.ok) {
-        localStorage.removeItem('token');
-        
-        //if on homepage then reload, else navigate to homepage/ TODO: better way to reload, refreshes whole page?
-        if (currentLocation == "/") {
-          window.location.reload();
-        } else {
-          navigate("/", { replace: true});
-        }
-      } else {
-        localStorage.removeItem('token');
-        navigate("/", { replace: true});
-      }
-    }).catch((error) =>{
-      alert(error.message);
-    }
-    )
-  } 
+  const navigate = useNavigate();
 
   const clickMenuFunction = (e: React.MouseEvent<HTMLAnchorElement>) => {
     let links = document.getElementById("links");
@@ -65,8 +37,7 @@ const Navbar = (): JSX.Element => {
         <Link to="/" id="title">Calendar App</Link>
         <div id="links">
           <Link to="/Calendar">Calendar</Link>
-          <Link to="/Settings">Settings</Link>
-          <Link to="/" onClick={(e)=>handleLogout(e)}>Logout</Link>
+          <Link to="/" onClick={()=>logout(navigate)}>Logout</Link>
         </div>
 
         <a className="icon" onClick={(e) => clickMenuFunction(e)}>

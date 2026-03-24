@@ -6,54 +6,55 @@ import datetime, random
 #TODO: __str__ methods
 
 """
-    User Model and related classes
+  User Model and related classes
 """
 class User(AbstractUser):
-    user_id = models.AutoField(primary_key=True)
-    email = models.EmailField(null=False, unique=True, max_length=100)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    password = models.CharField(max_length=100)
+  user_id = models.AutoField(primary_key=True)
+  email = models.EmailField(null=False, unique=True, max_length=100)
+  first_name = models.CharField(max_length=100)
+  last_name = models.CharField(max_length=100)
+  password = models.CharField(max_length=100)
+  username = models.CharField(max_length=150, unique=True, null=True, blank=True)
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+  USERNAME_FIELD = 'email'
+  REQUIRED_FIELDS = ['password',]
 
-    objects = UserManager()
+  objects = UserManager()
 
-    class Meta:
-        managed = True
-        db_table = 'user'  
+  class Meta:
+    managed = True
+    db_table = 'user'  
 
 
 class UserManager(BaseUserManager):
-    def create(self, email, password=None, **extra_fields):
-        user = self.create(email, password, **extra_fields)
-        user.save(using=self._db)
-        return user
+  def create(self, email, password=None, **extra_fields):
+    user = self.create(email, password, **extra_fields)
+    user.save(using=self._db)
+    return user
 
-    def create_superuser(self, email, password=None, **extra_fields):
-        user = self.create(email, password, **extra_fields)
-        user.is_staff = True
-        user.is_superuser = True
-        user.is_active = True
-        user.save(using=self._db)
-        return user
+  def create_superuser(self, email, password=None, **extra_fields):
+    user = self.create(email, password, **extra_fields)
+    user.is_staff = True
+    user.is_superuser = True
+    user.is_active = True
+    user.save(using=self._db)
+    return user
 
 
 
 """
-   UserNote Model and related classes
-   #TODO: Probably need more descriptive destinctions between notes (note name, etc)
+  UserNote Model and related classes
+  #TODO: Probably need more descriptive destinctions between notes (note name, etc)
 """
 class UserNote(models.Model):
-    note_id = models.AutoField(primary_key=True)
-    message = models.CharField(max_length=2000)
-    date = models.DateField()
-    date_created = models.DateTimeField(auto_now=True)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+  note_id = models.AutoField(primary_key=True)
+  message = models.CharField(max_length=2000)
+  date = models.DateField()
+  date_created = models.DateTimeField(auto_now=True)
+  user_id = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    class Meta:
-        managed = True
-        db_table = 'user_note'
+  class Meta:
+    managed = True
+    db_table = 'user_note'
 
         

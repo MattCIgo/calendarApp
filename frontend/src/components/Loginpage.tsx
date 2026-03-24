@@ -1,42 +1,20 @@
+import fall from '../images/fall.jpg';
+import React, {useState} from 'react';
+import {login} from './utils.tsx';
 import { useNavigate } from "react-router-dom";
-import fall from '../images/fall.jpg'
 
 const Loginpage = (): JSX.Element => {
+  let [email, setEmail] = useState('');
+  let [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.ChangeEvent<any>) => {
-    e.preventDefault();
+  const updateEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
+  }
 
-    // Check for empty Strings
-    if ((document.getElementById('emailText') as HTMLInputElement).value == '' ||
-      (document.getElementById('passwordText') as HTMLInputElement).value == '') {
-        alert("Enter All Credentials");
-        return;
-    }
-
-    let email = (document.getElementById('emailText') as HTMLInputElement).value;
-    let password = (document.getElementById('passwordText') as HTMLInputElement).value;
-
-    fetch('http://localhost:8000/login', {
-      method: 'POST',
-      headers: { "Content-Type" : "application/json" },
-      body: JSON.stringify({"email" : email,
-        "password" : password
-      }),
-    }).then(response => {
-      return response.json();
-    }).then(data =>{
-      // If a token is returned then log the user in
-      if (data[0].token) {
-        navigate("/", { replace: true});
-        localStorage.setItem('token', data[0].token);
-        return 
-      }
-
-      alert("Incorrect Username or Password");
-    }
-    )
-  } 
+  const updatePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
+  }
 
   return (
     <div className="loginContainer">
@@ -47,13 +25,13 @@ const Loginpage = (): JSX.Element => {
           <form>
             <div id="email">
               <label id="emailLabel">Email: </label>
-              <input type="text" id="emailText" name="email"></input>
+              <input type="text" id="emailText" name="email" onChange={(e) => updateEmail(e)}></input>
             </div>
             <div id="password">
               <label id="passwordLabel">Password: </label>
-              <input type="text" id="passwordText" name="password"></input> 
+              <input type="text" id="passwordText" name="password" onChange={(e) => updatePassword(e)}></input> 
             </div> 
-            <input type="submit" id="login" name="login" value="Login" onClick={(e)=>handleLogin(e)}></input>
+            <input type="button" id="login" name="login" value="Login" onClick={()=>login(email, password, navigate)}></input>
             <a id="forgotPassword">Forgot Password?</a>
           </form>
         </div>

@@ -9,6 +9,7 @@ set search_path
 select * 
 from public.user;
 
+
 select * 
 from public.user_note;
 

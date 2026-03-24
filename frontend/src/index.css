@@ -233,7 +233,6 @@ body {
 
 /* Homepage CSS */
 .homeContainer {
-  background-color: #1F2833;
   padding-top: 70px;
   height: fit-content;
 
@@ -499,8 +498,6 @@ body {
 /* Loginpage CSS */
 /* TODO: could be better*/
 .loginContainer {
-  position: relative;
-  background-color: #1F2833;
 
   #backgroundImage{
     margin-top: 70px;
@@ -608,8 +605,6 @@ body {
 
 /* Signuppage CSS */
 .signupContainer {
-  position: relative;
-  background-color: #1F2833;
   width: 100vw;
   min-height: 100vh;
   overflow: auto;
@@ -752,8 +747,6 @@ body {
 /*TODO: navbar on calendarpage moves up alittle*/
 .calendarPageContainer {
   padding-top: 70px;
-  position: absolute;
-  background-color: #1F2833;
   width: fit-content;
   height: fit-content;
 
@@ -990,16 +983,103 @@ body {
     #searchNotesResultsContainer {
       width: 55vw;
 
-      #searchResultsTable {
-        background-color: #393c46;
-        width: 49vw;
+      #searchedNotesContainer {
         height: 450px;
-        margin-top: 25px;
+        background-color: #3c3f49;
+        height: 450px;
+        width: 96%;
         margin-left: auto;
         margin-right: auto;
-        text-align: center;
+        margin-top: 25px;
         border-radius: 20px;
-      } 
+        overflow: hidden;
+        
+        #resultsTitle {
+          text-align: center;
+          color: #45A29E;
+        }
+
+        #notesContainer {
+          background-color: #2e303a;
+          position: relative;
+          width: 94%;
+          left: 3%;
+          height: 340px;
+          overflow: scroll;
+          border-radius: 10px;
+
+          
+
+          .note {
+            background-color: rgba(70, 57, 57, 0.8)!important;
+            position: relative;
+            cursor: pointer;
+            font-size: 18px;
+            width:  92%;
+            height: fit-content;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            padding-bottom: 2px;
+            margin-left: 2%;
+            margin-right: 2%;
+            padding-left: 2%;
+            padding-right: 2%;
+            border-radius: 10px;
+            overflow-wrap: break-word;
+
+            .noteTitleFlexContainer {
+              width: 100%;
+              display: flex;
+              height: fit-content;
+
+              .deleteNoteButton {
+                margin-top: 5px;
+                height: 20px;
+                width: 20px;
+                font-size: 10px;
+                text-align: center;
+                border-radius: 25px;
+                line-height: 10px;
+              }
+
+              h1 {
+                text-align: center;
+                margin-right: 15px;
+                width: calc(100% - 20px);
+                margin-top: 5px;
+                font-size: 18px;
+              }
+            }
+
+            p {
+              margin: 0;
+              text-align: center;
+              font-size: 14px;
+              padding-bottom: 5px;
+            }
+          } 
+        }   
+      }
+    }
+  }
+
+  @media screen and (max-width: 800px) {
+    #searchNotesContainer {
+      display:inline-block;
+
+      #searchBarNotesContainer {
+        width: 100vw;
+        height: 300px;
+        padding-top: 20px;
+        padding-bottom: 30px;
+      }
+
+      #searchNotesResultsContainer {
+        width: 100vw;
+
+        #searchedNotesContainer {
+        }
+      }
     }
   }
 }
@@ -1118,12 +1198,13 @@ body {
           overflow: scroll;
 
           .note {
-            background-color: rgba(105, 90, 90, 0.8)!important;
+            background-color: rgba(70, 57, 57, 0.8)!important;
             position: relative;
             cursor: pointer;
             font-size: 18px;
             width:  92%;
             height: fit-content;
+            margin-top: 5px;
             margin-bottom: 5px;
             padding-bottom: 2px;
             margin-left: 2%;
@@ -1133,29 +1214,38 @@ body {
             border-radius: 10px;
             overflow-wrap: break-word;
 
-            .deleteNoteButton {
-              position: absolute;
+            .noteTitleFlexContainer {
               display: flex;
-              justify-content: center;
-              align-items: center;
-              cursor: pointer;
-              overflow: hidden;
-              font-size: 3px;
-              top: 3.3px;
-              left: 3.3px;
-              width: 10px;
-              height: 10px;
-              border-radius: 25px;
-            }
+              height: fit-content;
+              width: 98%;
 
-            h1 {
-              font-size: 18px;
+              .deleteNoteButton {
+                margin-top: 5px;
+                height: 20px;
+                width: 20px;
+                font-size: 10px;
+                border-radius: 25px;
+                text-align: center;
+                line-height: 10px;
+              }
+
+              h1 {
+                text-align: center;
+                margin-right: 15px;
+                width: calc(100% - 20px);
+                margin-top: 5px;
+                font-size: 18px;
+              }
             }
 
             p {
+              margin: 0;
+              text-align: center;
               font-size: 14px;
+              padding-top: 5px;
+              padding-bottom: 5px;
             }
-          }
+          } 
         }
       }
     }
@@ -1508,5 +1598,20 @@ body {
   .calendarContainer {
     max-width: calc(95vw - (10px));
     max-height: calc(100vh - (70px + 60px + 65px));
+  }
+}
+
+.userInfoContainer {
+  padding-top: 70px;
+  height: fit-content;
+  width: 100vw;
+
+  #updateUserInfoContainer {
+    background-color: #45505e;
+    height: 500px;
+    width: 90vw;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
