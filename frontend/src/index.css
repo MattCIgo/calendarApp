@@ -132,6 +132,7 @@ body {
 
   #links {
     margin-top: 25px;
+    margin-right: 10px;
     float: right;
     display: block;
   }
@@ -159,7 +160,7 @@ body {
 
   #links a {
     float: left;
-    margin-right: 25px;
+    margin-right: 15px;
   }
 
   a:hover{
