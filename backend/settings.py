@@ -28,6 +28,11 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+# Email Settings
+
+
+
+
 # Application definition
 
 INSTALLED_APPS = [

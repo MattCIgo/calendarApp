@@ -11,6 +11,8 @@ import random, json
 
 # TODO: more descriptive errors
 
+# TODO: Email Confirmation
+
 """
   Create User
 """
