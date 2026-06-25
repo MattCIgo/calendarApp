@@ -35,6 +35,8 @@ class UserCreate(APIView):
       print(e)
       return Response({"error": "User Already Exists"}, status=status.HTTP_400_BAD_REQUEST)
 
+  def activateAccount(request, user, email):
+    return print("In activateAccount method")
 
 """
   Logging in
