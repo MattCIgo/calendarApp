@@ -15,6 +15,7 @@ class User(AbstractUser):
   last_name = models.CharField(max_length=100)
   password = models.CharField(max_length=100)
   username = models.CharField(max_length=150, unique=True, null=True, blank=True)
+  is_active = models.BooleanField(default=False)
 
   USERNAME_FIELD = 'email'
   REQUIRED_FIELDS = ['password',]

@@ -18,16 +18,21 @@ import random, json
 """
 class UserCreate(APIView):
   def post(self, request, format=None):
+    print(request.data)
+    # TODO: New Serializer for create user seperate from user 
     serializer = serializers.CreateUserSerializer(data=request.data)
     
     try:
-      serializer.is_valid()
+      print(serializer.is_valid())
+      print(serializer.validated_data['first_name'])
+
       first_name = serializer.validated_data['first_name']
       last_name = serializer.validated_data['last_name']
       password = serializer.validated_data['password']
       email = serializer.validated_data['email']
 
       user = models.User.objects.create(first_name=first_name, last_name=last_name, email=email, password=password)
+      self.activateAccount(request, user, email)
 
       return Response({"message": "User Created!"}, status=status.HTTP_200_OK)
 
@@ -36,7 +41,7 @@ class UserCreate(APIView):
       return Response({"error": "User Already Exists"}, status=status.HTTP_400_BAD_REQUEST)
 
   def activateAccount(request, user, email):
-    return print("In activateAccount method")
+    return print("Use Email to Activate your Account")
 
 """
   Logging in
