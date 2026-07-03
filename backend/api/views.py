@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.core import serializers as djangoserializers
 from django.utils import timezone
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -40,7 +42,23 @@ class UserCreate(APIView):
       print(e)
       return Response({"error": "User Already Exists"}, status=status.HTTP_400_BAD_REQUEST)
 
-  def activateAccount(request, user, email):
+  def activateAccount(request, user, to_email):
+    mail_subject = "Activate your Account."
+    message = render_to_string("Activate account", {
+      'user': user.username,
+      'domain': get_current_site(),
+      'uid': urlsafe_base64_decode(force_bytes(user.user_id)),
+      'token': account_activation_token.make_token(user),
+      'Protocol': 'http'
+    })
+
+    email = EmailMessage(mail_subject, message, to={to_email})
+
+    if email.send():
+      print("SUCCESS")
+    else:
+      print("FAIL")
+
     return print("Use Email to Activate your Account")
 
 """
