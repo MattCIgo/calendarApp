@@ -3,40 +3,43 @@ from django.core import serializers as djangoserializers
 from django.utils import timezone
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import EmailMessage
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from datetime import datetime
 from . import serializers, models
+from .tokens import account_activation_token
 import random, json
 
 # TODO: more descriptive errors
 
-# TODO: Email Confirmation
+def activate(request, uidb64, token):
+  #TODO: activate accound in database, then make frontend redirect to homepage.
+  return print("In activate function")
 
 """
   Create User
 """
 class UserCreate(APIView):
   def post(self, request, format=None):
-    print(request.data)
-    # TODO: New Serializer for create user seperate from user 
-    serializer = serializers.CreateUserSerializer(data=request.data)
+    # TODO: Check for user alread yexists serial,izer error ******
+    serializer = serializers.UserSerializer(data=request.data)
     
     try:
-      print(serializer.is_valid())
-      print(serializer.validated_data['first_name'])
-
+      serializer.is_valid()
       first_name = serializer.validated_data['first_name']
       last_name = serializer.validated_data['last_name']
       password = serializer.validated_data['password']
       email = serializer.validated_data['email']
 
       user = models.User.objects.create(first_name=first_name, last_name=last_name, email=email, password=password)
-      self.activateAccount(request, user, email)
+      UserCreate.activateAccount(request, user, email)
 
-      return Response({"message": "User Created!"}, status=status.HTTP_200_OK)
+      return Response({"message": "User Created! Activate your Account"}, status=status.HTTP_200_OK)
 
     except Exception as e:
       print(e)
@@ -44,22 +47,23 @@ class UserCreate(APIView):
 
   def activateAccount(request, user, to_email):
     mail_subject = "Activate your Account."
-    message = render_to_string("Activate account", {
+    message = render_to_string("activate_account.html", {
+      # TODO: get correct imports
       'user': user.username,
-      'domain': get_current_site(),
-      'uid': urlsafe_base64_decode(force_bytes(user.user_id)),
+      'domain': get_current_site(request).domain,
+      'uid': urlsafe_base64_encode(force_bytes(user.user_id)),
       'token': account_activation_token.make_token(user),
       'Protocol': 'http'
     })
 
     email = EmailMessage(mail_subject, message, to={to_email})
 
+    # TODO: Change this to correct error handling
     if email.send():
       print("SUCCESS")
     else:
       print("FAIL")
 
-    return print("Use Email to Activate your Account")
 
 """
   Logging in

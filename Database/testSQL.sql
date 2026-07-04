@@ -13,7 +13,8 @@ from public.user;
 select * 
 from public.user_note;
 
-delete from "user";
+delete from "user"
+where "email" = 'mcigo332@gmail.com';
 
 delete from "user_note";
 
