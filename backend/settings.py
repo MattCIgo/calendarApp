@@ -31,9 +31,9 @@ ALLOWED_HOSTS = []
 # Email Settings (replace email when needed)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_FROM = 'gmail.com'
-EMAIL_HOST_USER = 'gmail.com'
-EMAIL_HOST_PASSWORD = 'pmjbkzridcojybbq'
+EMAIL_FROM = 'mcigocalendarapp@gmail.com'
+EMAIL_HOST_USER = 'mcigocalendarapp@gmail.com'
+EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
