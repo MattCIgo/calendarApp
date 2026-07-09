@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.core import serializers as djangoserializers
 from django.utils import timezone
+from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_str
@@ -9,6 +11,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
 from datetime import datetime
 from . import serializers, models
@@ -16,10 +19,30 @@ from .tokens import account_activation_token
 import random, json
 
 # TODO: more descriptive errors
+# TODO: cleanup imports
 
+# TODO: cleanup errors and other stuff
+@api_view(['GET'])
 def activate(request, uidb64, token):
-  #TODO: activate accound in database, then make frontend redirect to homepage.
-  return print("In activate function")
+  user = get_user_model()
+
+  try:
+    uid = force_str(urlsafe_base64_decode(uidb64))
+    user = models.User.objects.get(user_id=uid)
+  except: 
+    user = None
+  
+  if user is not None and account_activation_token.check_token(user, token):
+    user.is_active = True
+    user.save()
+
+    print("In activate function and activate account")
+
+    return Response({"message": "Account Activated"}, status=status.HTTP_200_OK)
+  else:
+    return Response({"error": "Link Invalid"}, status=status.HTTP_400_BAD_REQUEST)
+
+  return Response({"error": "Something went wrong!"}, status=status.HTTP_400_BAD_REQUEST)
 
 """
   Create User
@@ -48,7 +71,6 @@ class UserCreate(APIView):
   def activateAccount(request, user, to_email):
     mail_subject = "Activate your Account."
     message = render_to_string("activate_account.html", {
-      # TODO: get correct imports
       'user': user.username,
       'domain': get_current_site(request).domain,
       'uid': urlsafe_base64_encode(force_bytes(user.user_id)),
@@ -60,9 +82,9 @@ class UserCreate(APIView):
 
     # TODO: Change this to correct error handling
     if email.send():
-      print("SUCCESS")
+      print("Successfully sent email")
     else:
-      print("FAIL")
+      print("Failed to sent email")
 
 
 """
