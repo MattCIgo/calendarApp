@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.conf import settings
 from django.core import serializers as djangoserializers
 from django.utils import timezone
 from django.contrib import messages
@@ -20,7 +21,9 @@ import random, json
 
 # TODO: more descriptive errors
 # TODO: cleanup imports
+# TODO: best way to use multiple get methods in a single view? or explicit url mapping?
 
+# TODO: have email link to frontend, then have frontend go to backend
 # TODO: cleanup errors and other stuff
 @api_view(['GET'])
 def activate(request, uidb64, token):
@@ -49,7 +52,7 @@ def activate(request, uidb64, token):
 """
 class UserCreate(APIView):
   def post(self, request, format=None):
-    # TODO: Check for user alread yexists serial,izer error ******
+    # TODO: Check for user already exists serial,izer error ******
     serializer = serializers.UserSerializer(data=request.data)
     
     try:
@@ -72,7 +75,7 @@ class UserCreate(APIView):
     mail_subject = "Activate your Account."
     message = render_to_string("activate_account.html", {
       'user': user.username,
-      'domain': get_current_site(request).domain,
+      'domain': settings.FRONTEND_URL,
       'uid': urlsafe_base64_encode(force_bytes(user.user_id)),
       'token': account_activation_token.make_token(user),
       'Protocol': 'http'

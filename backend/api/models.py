@@ -5,6 +5,7 @@ import datetime, random
 
 #TODO: __str__ methods
 
+#TODO: make user_id longer
 """
   User Model and related classes
 """

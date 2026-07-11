@@ -3,6 +3,7 @@ import Homepage from "./components/Homepage";
 import Loginpage from "./components/Loginpage";
 import Signuppage from "./components/Signuppage";
 import Calendarpage from "./components/Calendarpage";
+import Emailactivation from "./components/Emailactivation";
 import { Route, Routes } from "react-router-dom";
 import { DateProvider } from "./contexts/DateContext";
 
@@ -17,6 +18,7 @@ function App() {
             <Route path="/Login" element={<Loginpage />} /> 
             <Route path="/Signup" element={<Signuppage />} />
             <Route path="/Calendar" element={<Calendarpage />} />
+            <Route path="/activate/:uid/:token" element={<Emailactivation />} />
           </Routes>
         </div>
       </div>
