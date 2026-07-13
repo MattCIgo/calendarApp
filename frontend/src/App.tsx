@@ -18,7 +18,7 @@ function App() {
             <Route path="/Login" element={<Loginpage />} /> 
             <Route path="/Signup" element={<Signuppage />} />
             <Route path="/Calendar" element={<Calendarpage />} />
-            <Route path="/activate/:uid/:token" element={<Emailactivation />} />
+            <Route path="/activate/:uidb64/:token" element={<Emailactivation />} />
           </Routes>
         </div>
       </div>

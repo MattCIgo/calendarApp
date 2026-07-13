@@ -25,12 +25,15 @@ import random, json
 
 # TODO: have email link to frontend, then have frontend go to backend
 # TODO: cleanup errors and other stuff
-@api_view(['GET'])
-def activate(request, uidb64, token):
+# TODO: serializer for this????
+@api_view(['POST'])
+def activate(request):
+  uid = request.data.get('uidb64')
+  token = request.data.get('token')
   user = get_user_model()
 
   try:
-    uid = force_str(urlsafe_base64_decode(uidb64))
+    uid = force_str(urlsafe_base64_decode(uid))
     user = models.User.objects.get(user_id=uid)
   except: 
     user = None
@@ -39,20 +42,20 @@ def activate(request, uidb64, token):
     user.is_active = True
     user.save()
 
-    print("In activate function and activate account")
-
     return Response({"message": "Account Activated"}, status=status.HTTP_200_OK)
   else:
-    return Response({"error": "Link Invalid"}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({"error": "Link Invalid or Account already activated"}, status=status.HTTP_400_BAD_REQUEST)
 
   return Response({"error": "Something went wrong!"}, status=status.HTTP_400_BAD_REQUEST)
 
 """
   Create User
 """
+# TODO: User already exists error even after deleting (could be frontend problem)
+#        TOKEN PROBLEM?
 class UserCreate(APIView):
   def post(self, request, format=None):
-    # TODO: Check for user already exists serial,izer error ******
+    # TODO: Check for user already exists serializer error ******
     serializer = serializers.UserSerializer(data=request.data)
     
     try:
