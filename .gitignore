@@ -1,7 +1,13 @@
 backend/api/migrations/__pycache__
 backend/api/__pycache__
 backend/__pycache__
-frontend/node_modules
-backend/venv
+backend/.venv
+backend/.env
+backend/config/local.py
 backend/api/migrations
+
+
+frontend/node_modules
+
+
 TODO.md
