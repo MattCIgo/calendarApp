@@ -9,6 +9,9 @@ set search_path
 select * 
 from public.user;
 
+select *
+from public.authtoken_token;
+
 
 select * 
 from public.user_note;
