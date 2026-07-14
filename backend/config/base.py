@@ -13,9 +13,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from project.env import BASE_DIR, env
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-# BASE_DIR = Path(__file__).resolve().parent.parent
-
 env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
@@ -33,18 +30,17 @@ ALLOWED_HOSTS = []
 
 # Email Settings (replace email when needed)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = env('EMAIL_HOST')
 EMAIL_FROM = env('EMAIL_FROM')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = env('EMAIL_PORT')
 EMAIL_USE_TLS = True
-FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173")
+EMAIL_USE_SSL = False
+FRONTEND_URL = env("FRONTEND_URL")
+EMAIL_TIMEOUT = 8
 
 PASSWORD_RESET_TIMEOUT = 14400
-
-# Useful for testing email verfication, comment out when done.
-ACCOUNT_PREVENT_ENUMERATION = False 
 
 # Application definition
 
@@ -159,5 +155,5 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
+    env("FRONTEND_URL"),
 ]

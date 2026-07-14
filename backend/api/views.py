@@ -23,7 +23,7 @@ import random, json
 # TODO: cleanup imports
 # TODO: best way to use multiple get methods in a single view? or explicit url mapping?
 
-# TODO: have email link to frontend, then have frontend go to backend
+# TODO: Runs twice? gets both account activated and link invalid (probably frontend problem (UseEffect?))
 # TODO: cleanup errors and other stuff
 # TODO: serializer for this????
 @api_view(['POST'])
@@ -78,16 +78,14 @@ class UserCreate(APIView):
     mail_subject = "Activate your Account."
     message = render_to_string("activate_account.html", {
       'user': user.username,
-      'domain': settings.FRONTEND_URL,
-      'uid': urlsafe_base64_encode(force_bytes(user.user_id)),
-      'token': account_activation_token.make_token(user),
+      'react_frontend_url': f"{settings.FRONTEND_URL}/activate/{urlsafe_base64_encode(force_bytes(user.user_id))}/{account_activation_token.make_token(user)}",
       'Protocol': 'http'
     })
 
     email = EmailMessage(mail_subject, message, to={to_email})
 
     # TODO: Change this to correct error handling
-    if email.send():
+    if email.send():   
       print("Successfully sent email")
     else:
       print("Failed to sent email")
