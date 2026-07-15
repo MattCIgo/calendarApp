@@ -9,5 +9,7 @@ backend/api/migrations
 
 frontend/node_modules
 
+database
+
 
 TODO.md
