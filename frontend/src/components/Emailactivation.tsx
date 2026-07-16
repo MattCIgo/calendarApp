@@ -32,7 +32,7 @@ const EmailActivation = () => {
 
   // TODO: Just make this the homepage? make small div that handles activation
   return(
-    <div></div>
+      <div className="emailActivationPage"></div>
   );
 };
 

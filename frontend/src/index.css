@@ -231,10 +231,14 @@ body {
   }
 }
 
+.page {
+  padding-top: 70px;
+  height: calc(100vh - 70px);
+}
+
 
 /* Homepage CSS */
 .homeContainer {
-  padding-top: 70px;
   height: fit-content;
 
   .intro {
@@ -499,13 +503,13 @@ body {
 /* Loginpage CSS */
 /* TODO: could be better*/
 .loginContainer {
+  height: 100%;
 
   #backgroundImage{
-    margin-top: 70px;
+    display: block;
     opacity: .5;
+    height: 100%;
     width: 100vw;
-    /*TODO: subtract 4 extra pixels from height to avoid scrollbar?*/
-    height: calc(100vh - 74px);
   }
 
   .loginBox {
@@ -606,16 +610,13 @@ body {
 
 /* Signuppage CSS */
 .signupContainer {
-  width: 100vw;
-  min-height: 100vh;
-  overflow: auto;
+  height: 100%;
 
   #backgroundImage{
-    margin-top: 70px;
+    display: block;
     opacity: .5;
+    height: 100%;
     width: 100vw;
-    /*TODO: subtract 4 extra pixels from height to avoid scrollbar?*/
-    height: calc(100vh - 74px);
   }
 
   .signupBox {
@@ -747,7 +748,6 @@ body {
 /* Calendarpage CSS */
 /*TODO: navbar on calendarpage moves up alittle*/
 .calendarPageContainer {
-  padding-top: 70px;
   width: fit-content;
   height: fit-content;
 
@@ -1603,7 +1603,6 @@ body {
 }
 
 .userInfoContainer {
-  padding-top: 70px;
   height: fit-content;
   width: 100vw;
 
@@ -1615,4 +1614,12 @@ body {
     margin-left: auto;
     margin-right: auto;
   }
+}
+
+
+.emailActivationPage { 
+  height: 70vh;
+  width: 70vw;
+  background-color: red;
+  margin-left: 15vw;
 }
