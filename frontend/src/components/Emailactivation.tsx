@@ -32,7 +32,9 @@ const EmailActivation = () => {
 
   // TODO: Just make this the homepage? make small div that handles activation
   return(
-      <div className="emailActivationPage"></div>
+      <div className="emailActivationPage">
+        <h1 id="activatedMessage">You've Activated your Account!</h1>
+      </div>
   );
 };
 
