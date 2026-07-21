@@ -62,3 +62,42 @@ export const login = (email: string, password: string, navigate: NavigateFunctio
     alert("Incorrect Username or Password");
   })
 } 
+
+
+// TODO: pas setextAreaVlaue???
+
+// function to delete div/ exit button on divs
+  // TODO: remove from this file and make it's own component?
+export function deleteDiv(e: MouseEvent) {
+  // Get the parent element (the deletable div)
+  const clickElement = e.target as HTMLElement;
+  let parentDiv: HTMLDivElement | null = clickElement.parentNode as HTMLDivElement | null;
+
+  // Remove the parent div from the DOM
+  if (parentDiv) {
+    parentDiv.style.display="none";
+    setTextareaValue('');
+  }
+
+  return
+}
+
+  // deletes grandparentdiv
+  // TODO: combine with deleteDiv? make own component?
+export function deleteGrandParentDiv(e: MouseEvent) {
+  // Get the parent element (the deletable div)
+  const clickElement = e.target as HTMLElement;
+  let parentDiv: HTMLDivElement | null = clickElement.parentNode as HTMLDivElement | null;
+
+  // Remove the parent div from the DOM
+  if (parentDiv) {
+    let grandParentDiv: HTMLDivElement | null = parentDiv.parentNode as HTMLDivElement | null;
+
+    if (grandParentDiv) {
+      grandParentDiv.style.display="none";
+      setTextareaValue('');
+    }
+  }
+
+  return
+}

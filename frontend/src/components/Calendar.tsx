@@ -1,5 +1,6 @@
 import React, {MouseEvent, useState, useEffect, useContext} from "react";
 import DateContext from "../contexts/DateContext";
+import {deleteDiv, deleteGrandParentDiv} from './utils.tsx';
 
 interface calendarPageProps {
   month: string;
@@ -89,42 +90,6 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber }): JS
     daysOfMonth.push(dayNumber);
     noteNumberArray.push(0);
     dayNumber++;
-  }
-
-  // function to delete div/ exit button on divs
-  // TODO: remove from this file and make it's own component?
-  function deleteDiv(e: MouseEvent) {
-    // Get the parent element (the deletable div)
-    const clickElement = e.target as HTMLElement;
-    let parentDiv: HTMLDivElement | null = clickElement.parentNode as HTMLDivElement | null;
-
-    // Remove the parent div from the DOM
-    if (parentDiv) {
-      parentDiv.style.display="none";
-      setTextareaValue('');
-    }
-
-    return
-  }
-
-  // deletes grandparentdiv
-  // TODO: combine with deleteDiv? make own component?
-  function deleteGrandParentDiv(e: MouseEvent) {
-    // Get the parent element (the deletable div)
-    const clickElement = e.target as HTMLElement;
-    let parentDiv: HTMLDivElement | null = clickElement.parentNode as HTMLDivElement | null;
-
-    // Remove the parent div from the DOM
-    if (parentDiv) {
-      let grandParentDiv: HTMLDivElement | null = parentDiv.parentNode as HTMLDivElement | null;
-
-      if (grandParentDiv) {
-        grandParentDiv.style.display="none";
-        setTextareaValue('');
-      }
-    }
-
-    return
   }
 
   // function to create Note, also deletes note if wanted
