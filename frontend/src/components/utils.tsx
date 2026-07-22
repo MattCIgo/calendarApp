@@ -3,7 +3,7 @@ import { NavigateFunction } from 'react-router-dom';
 
 
 // logout function
-export const logout = (navigate: NavigateFunction) => {
+export function logout(navigate: NavigateFunction) {
   const token = localStorage.getItem('token'); // make useContext variable
   const currentUrl = window.location.href;
 
@@ -32,10 +32,8 @@ export const logout = (navigate: NavigateFunction) => {
   )
 }
 
-
-
 // Login function
-export const login = (email: string, password: string, navigate: NavigateFunction) => {
+export function login(email: string, password: string, navigate: NavigateFunction) {
 
   // Check for empty Strings
   if (!email || !password) {
@@ -51,8 +49,7 @@ export const login = (email: string, password: string, navigate: NavigateFunctio
     }),
   }).then(response => {
     return response.json();
-  }).then(data =>{
-    // If a token is returned then log the user in
+  }).then(data => {
     if (data[0].token) {
       navigate("/", { replace: true});
       localStorage.setItem('token', data[0].token);
@@ -64,11 +61,11 @@ export const login = (email: string, password: string, navigate: NavigateFunctio
 } 
 
 
-// TODO: pas setextAreaVlaue???
+
+
 
 // function to delete div/ exit button on divs
-  // TODO: remove from this file and make it's own component?
-export function deleteDiv(e: MouseEvent) {
+export function deleteDiv(e: React.MouseEvent<Element>, setTextareaValue: React.Dispatch<React.SetStateAction<string>>) {
   // Get the parent element (the deletable div)
   const clickElement = e.target as HTMLElement;
   let parentDiv: HTMLDivElement | null = clickElement.parentNode as HTMLDivElement | null;
@@ -84,7 +81,7 @@ export function deleteDiv(e: MouseEvent) {
 
   // deletes grandparentdiv
   // TODO: combine with deleteDiv? make own component?
-export function deleteGrandParentDiv(e: MouseEvent) {
+export function deleteGrandParentDiv(e: React.MouseEvent<Element>, setTextareaValue: React.Dispatch<React.SetStateAction<string>>) {
   // Get the parent element (the deletable div)
   const clickElement = e.target as HTMLElement;
   let parentDiv: HTMLDivElement | null = clickElement.parentNode as HTMLDivElement | null;
@@ -101,3 +98,13 @@ export function deleteGrandParentDiv(e: MouseEvent) {
 
   return
 }
+
+
+
+
+
+// TODO: keeps parents onclick events from spreading to children, can be reused, is this needed??
+export const preventParentPropogation = (e: React.MouseEvent<HTMLDivElement>) => {
+  e.stopPropagation();
+  e.preventDefault();
+};

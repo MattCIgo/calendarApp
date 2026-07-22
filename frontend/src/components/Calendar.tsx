@@ -1,6 +1,7 @@
 import React, {MouseEvent, useState, useEffect, useContext} from "react";
 import DateContext from "../contexts/DateContext";
-import {deleteDiv, deleteGrandParentDiv} from './utils.tsx';
+import {deleteDiv, deleteGrandParentDiv, preventParentPropogation} from './utils.tsx';
+import NoteDiv from "./NoteDiv.tsx";
 
 interface calendarPageProps {
   month: string;
@@ -11,6 +12,8 @@ interface calendarPageProps {
 // TODO: use hooks and use states, etc...
 const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber }): JSX.Element => {
   const token = localStorage.getItem('token');
+  const [isNoteDivVisible, setIsNoteDivVisible] = useState(false);
+  const [visibleDay, setVisibleDay] = useState<number | null>(null);
   const [notes, setNotes]  = useState<Note[]>([]);
   const [textAreaValue, setTextareaValue] = useState<string>('');
   const [numberOfNotes, setNumberOfNotes] = useState<number[]>();
@@ -83,62 +86,13 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber }): JS
   // ....
   let daysInMonth = monthDays(monthDate);
   noteNumberArray.push(0);
-  let dayNumber = 2;
+  let dayNumber = 1;
 
   // To get number of days in an array
   while(dayNumber <= daysInMonth) {
     daysOfMonth.push(dayNumber);
     noteNumberArray.push(0);
     dayNumber++;
-  }
-
-  // function to create Note, also deletes note if wanted
-  // TODO: remove from this file and make it's own component?
-  function createNote(date: string, day: number, e: MouseEvent) {
-    const message = textAreaValue;
-    setTextareaValue('');
-
-    if (message.length === 0) {
-      return alert("Type a Message");
-    }
-
-    fetch('http://localhost:8000/notes', {
-      method: 'POST',
-      headers: { "Content-Type" : "application/json",
-        "Authorization": `Token ${token}`,
-      },
-      body: JSON.stringify({"message" : message,
-        "date" : date,
-        "method" : "createNote",
-      }),
-      }).then(response => {
-        if(!response.ok) {
-          return response.json().then(error => {
-            throw new Error(error.error);
-          })
-        }
-
-        return response.json();
-      }).then(data => {
-        console.log(data[0].message);
-        const jsonString = JSON.parse(data[0].return_note);
-        updateNoteNumber();
-
-        //TODO: causing field to be undefined
-        if (numberOfNotes) {
-          let noteNumbers = [...numberOfNotes];
-          noteNumbers[day-1]++;
-          setNumberOfNotes(noteNumbers);
-        }
-
-        deleteGrandParentDiv(e);
-
-        setNotes(notes => [...notes, jsonString[0]]);
-      }).catch((error) =>{
-        alert(error);
-    })
-
-    return
   }
 
   // function to delete Note
@@ -185,7 +139,7 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber }): JS
       <div className="noteNumber" title= 'Number of Notes' onClick={(e) => showNoteNumberDiv(day-1, e)}> 
         {numberOfNotes && numberOfNotes[day-1]}
         <div className="showNotes" style={{display: "none"}} onClick={preventParentPropogation}>
-          <button className="popUpExitButton" onClick={(e) => deleteDiv(e)}>X</button>
+          <button className="popUpExitButton" onClick={(e) => deleteDiv(e, setTextareaValue)}>X</button>
           <h1>Notes</h1>
           <div id="notesContainer">
             {notes && notes.filter(note => date === (note.fields.date).toString().replace(/-0+/g, '-')).map((note, index) =>
@@ -236,41 +190,6 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber }): JS
     }
   }
 
-  // popup to add note to a day
-  const noteDiv = (day: number): JSX.Element => {
-    const handleNoteChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      if (event.target) {
-        setTextareaValue(event.target.value);
-      }
-    }
-
-    //TODO: need to delete grandparent div in case of cancel
-    return (
-      <div className="popUpDiv" style={{display: "none"}} data-day={day}>
-        <button className="popUpExitButton" onClick= {(e) => deleteDiv(e)}>X</button>
-        <label id="labelNoteBox" htmlFor="createNoteTextBox">Enter Note?</label>
-        <div id="textAreaDiv">
-          <textarea id="createNoteTextBox" value={textAreaValue} placeholder="..." onChange={(event) => handleNoteChange(event)}></textarea>
-          <button className="popUpAcceptButton" onClick= {(e) => 
-            createNote(getFullDate(day, month, year.toString()), day, e)}>Accept</button>
-          <button className="popUpCancelButton" onClick= {(e) => deleteGrandParentDiv(e)}>Cancel</button>
-        </div> 
-      </div>
-    )
-  } 
-
-  
-  // function to unhide to NoteDiv
-  const showNoteDiv = (index: number) => {
-    let showableDiv = document.getElementsByClassName("popUpDiv");
-
-    if ((showableDiv[index] as HTMLElement).style.display === "none") {
-      (showableDiv[index] as HTMLElement).style.display = "block";
-    } else {
-      (showableDiv[index] as HTMLElement).style.display = "none";
-    }
-  } 
-
   // shades present Day on calendar to indicate what day it is
   const presentDayShading = (day: number): Boolean => {
     let date = getFullDate(day, month, year.toString());
@@ -283,12 +202,6 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber }): JS
     }
   }
 
-  // TODO: keeps parents onclick events from spreading to children, can be reused, is this needed??
-  const preventParentPropogation= (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-    e.preventDefault();
-  };
-
   return (
     <div className="calendarContainer">
       <div className="calendarDays">Sunday</div>
@@ -298,20 +211,13 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber }): JS
       <div className="calendarDays">Thursday</div>
       <div className="calendarDays">Friday</div>
       <div className="calendarDays">Saturday</div>
-      <div className="numberedDays" style={{gridColumnStart:firstDayOfMonth+1, backgroundColor: presentDayShading(1) 
-        ? 'rgba(112, 108, 108, 0.8)': 'rgba(255, 255, 255, 0.8)'}}>
-          1 
-          {noteNumberDiv(1)}
-          {noteDiv(1)}
-          <button className="createNoteButton"  onClick= {() => showNoteDiv(0)}>Create Note</button>
-      </div>
       {daysOfMonth.map((day, index) =>
-      <div className="numberedDays" style={{backgroundColor: presentDayShading(day)
-        ? 'rgba(112, 108, 108, 0.8)': 'rgba(255, 255, 255, 0.8)'}} key={index}>
+      <div className="numberedDays" style={{gridColumnStart: index === 0 ? firstDayOfMonth + 1 : 'auto', 
+        backgroundColor: presentDayShading(day) ? 'rgba(112, 108, 108, 0.8)': 'rgba(255, 255, 255, 0.8)'}} key={index}>
           {day}
           {noteNumberDiv(day)}
-          {noteDiv(day)}
-          <button className="createNoteButton"  onClick= {() => showNoteDiv(index+1)}>Create Note</button>
+          {visibleDay === day && <NoteDiv day={day} date={getFullDate(day, month, year.toString())} setIsNoteDivVisible={() => setVisibleDay(null)}/>}
+          <button className="createNoteButton"  onClick={() => setVisibleDay(visibleDay === day ? null : day)}>Create Note</button>
       </div>)}
     </div>
   );
