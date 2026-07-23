@@ -1,3 +1,4 @@
+# backend
 backend/api/migrations/__pycache__
 backend/api/__pycache__
 backend/__pycache__
@@ -7,9 +8,11 @@ backend/config/local.py
 backend/api/migrations
 
 
+#frontend
 frontend/node_modules
 
+#database
 database
 
-
+#etc
 TODO.md

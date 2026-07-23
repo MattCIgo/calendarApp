@@ -1,7 +1,8 @@
 import React, {MouseEvent, useState, useEffect, useContext} from "react";
 import DateContext from "../contexts/DateContext";
-import {deleteDiv, deleteGrandParentDiv, preventParentPropogation} from './utils.tsx';
+import {deleteDiv, preventParentPropogation} from './utils.tsx';
 import NoteDiv from "./NoteDiv.tsx";
+import Note from "../types/note.ts";
 
 interface calendarPageProps {
   month: string;
@@ -12,29 +13,15 @@ interface calendarPageProps {
 // TODO: use hooks and use states, etc...
 const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber }): JSX.Element => {
   const token = localStorage.getItem('token');
-  const [isNoteDivVisible, setIsNoteDivVisible] = useState(false);
   const [visibleDay, setVisibleDay] = useState<number | null>(null);
   const [notes, setNotes]  = useState<Note[]>([]);
   const [textAreaValue, setTextareaValue] = useState<string>('');
-  const [numberOfNotes, setNumberOfNotes] = useState<number[]>();
-  const noteNumberArray: number[] = [];
+  //const noteCountsByDate: Record<string, number> = {};
   const monthDate = new Date(month + "-" + "1" + "-" + year); // date given passed month and year (day doesn't matter?>)
   const daysOfMonth: number[] = [];
   let firstDayOfMonthDate = new Date(year, monthNumber);
   let firstDayOfMonth = firstDayOfMonthDate.getDay();
   let currentDate = useContext(DateContext);
-
-  interface Note {
-    [key: number]: any; // needed for typescript indexing ( need string or number etc???)
-    pk: number,
-    model: string,
-    fields: {
-      user_id: number,
-      message: string,
-      date_created: Date,
-      date: Date,
-    }
-  }
 
   // get the initial notes from server
   // TODO; I/O bound, make thread?
@@ -61,11 +48,22 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber }): JS
         alert(error.message);
     })
   }, [])
+
+  const noteCountsByDate = React.useMemo(() => {
+    const counts: Record<string, number> = {};
+
+    notes.forEach((note) => {
+      if (note && note.fields && note.fields.date) {
+        const noteDateStr = note.fields.date.toString().replace(/-0+/g, '-');
+        counts[noteDateStr] = (counts[noteDateStr] || 0) + 1;
+      }
+    });
+
+    return counts;
+  }, [notes])
+
   
-  useEffect (() => {
-    updateNoteNumber();
-    setNumberOfNotes(noteNumberArray);
-  }, [notes, month])
+
 
   // get the full date with day passed as parameter
   function getFullDate(day: number, month: string, year: string): string {
@@ -79,21 +77,20 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber }): JS
   }
 
   // Function to get the number of days in the month
-  const monthDays = (date: Date) => {
+  function monthDays(date: Date) {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
   } 
 
   // ....
   let daysInMonth = monthDays(monthDate);
-  noteNumberArray.push(0);
   let dayNumber = 1;
 
   // To get number of days in an array
   while(dayNumber <= daysInMonth) {
     daysOfMonth.push(dayNumber);
-    noteNumberArray.push(0);
     dayNumber++;
   }
+
 
   // function to delete Note
   function deleteNote(id: number, day: number) {
@@ -115,15 +112,7 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber }): JS
         return response.json();
       }).then(data => {
         console.log(data.message); 
-        updateNoteNumber();
-
-        if (numberOfNotes) {
-          let noteNumbers = [...numberOfNotes];
-          noteNumbers[day-1]--;
-          setNumberOfNotes(noteNumbers);
-        }
-
-        setNotes(notes => notes && notes.filter(note =>note &&  note.pk !== id));
+        setNotes(prevNotes => prevNotes.filter(note => note.pk !== id));
       }).catch((error) =>{
         alert(error);
     })
@@ -134,10 +123,11 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber }): JS
   // shows the number of notes in lower right of day, click to see notes
   const noteNumberDiv = (day: number): JSX.Element => {
     let date = getFullDate(day, month, year.toString());
+    const count = noteCountsByDate[date] || 0;
 
     return (
       <div className="noteNumber" title= 'Number of Notes' onClick={(e) => showNoteNumberDiv(day-1, e)}> 
-        {numberOfNotes && numberOfNotes[day-1]}
+        {count}
         <div className="showNotes" style={{display: "none"}} onClick={preventParentPropogation}>
           <button className="popUpExitButton" onClick={(e) => deleteDiv(e, setTextareaValue)}>X</button>
           <h1>Notes</h1>
@@ -163,30 +153,6 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber }): JS
       (showableDiv[index] as HTMLElement).style.display = "block";
     } else {
       (showableDiv[index] as HTMLElement).style.display = "none";
-    }
-  }
-  
-  // function to getNumber of notes for a day
-  const updateNoteNumber = () => {
-    if (notes) {  
-      notes.map((note) => {
-        let noteDate
-
-        if (note) {
-          noteDate = (note.fields.date).toString().replace(/-0+/g, '-');
-        }
-
-        let day = 1;
-
-        while (day <= daysOfMonth.length + 1) {  
-          let calendarDate = getFullDate(day, month, year.toString());
-
-          if(noteDate === calendarDate) {
-            noteNumberArray[day-1]++;
-          }   
-          day++
-        }
-      })
     }
   }
 
@@ -215,9 +181,10 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber }): JS
       <div className="numberedDays" style={{gridColumnStart: index === 0 ? firstDayOfMonth + 1 : 'auto', 
         backgroundColor: presentDayShading(day) ? 'rgba(112, 108, 108, 0.8)': 'rgba(255, 255, 255, 0.8)'}} key={index}>
           {day}
-          {noteNumberDiv(day)}
-          {visibleDay === day && <NoteDiv day={day} date={getFullDate(day, month, year.toString())} setIsNoteDivVisible={() => setVisibleDay(null)}/>}
           <button className="createNoteButton"  onClick={() => setVisibleDay(visibleDay === day ? null : day)}>Create Note</button>
+          {noteNumberDiv(day)}
+          {visibleDay === day && <NoteDiv day={day} date={getFullDate(day, month, year.toString())} 
+            setIsNoteDivVisible={() => setVisibleDay(null)} setNotes = {setNotes}/>}
       </div>)}
     </div>
   );
