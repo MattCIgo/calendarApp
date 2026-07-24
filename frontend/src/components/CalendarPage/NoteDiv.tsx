@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Note from "../types/note.ts";
+import Note from "../../types/note.ts";
 
 interface NoteDivProps {
   date: string,

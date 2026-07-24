@@ -1,18 +1,15 @@
-import Note from "../types/note.ts";
+import Note from "../../types/note.ts";
 
 interface NoteNumberDivProps {
-  day: number,
   date: string,
   setIsNoteNumberDivVisible: React.Dispatch<React.SetStateAction<boolean>>,
   notes: Note[],
-  setNotes: React.Dispatch<React.SetStateAction<Note[]>>,
-  noteCountsByDate: Record<string, number>;
+  setNotes: React.Dispatch<React.SetStateAction<Note[]>>
 }
 
-function NoteNumberDiv ({day, date, setIsNoteNumberDivVisible, notes, setNotes, noteCountsByDate}: NoteNumberDivProps) {
+function NoteNumberDiv ({date, setIsNoteNumberDivVisible, notes, setNotes}: NoteNumberDivProps) {
   const token = localStorage.getItem('token');
 
-  // function to delete Note
   function deleteNote(id: number) {
     fetch('http://localhost:8000/notes', {
       method: 'POST',

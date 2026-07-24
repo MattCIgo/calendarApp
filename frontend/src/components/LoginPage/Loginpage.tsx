@@ -1,6 +1,6 @@
-import fall from '../images/fall.jpg';
+import fall from '../../images/fall.jpg';
 import React, {useState} from 'react';
-import {login} from './utils.tsx';
+import {login} from '.././utils.tsx';
 import { useNavigate } from "react-router-dom";
 
 const Loginpage = (): JSX.Element => {

@@ -1,46 +1,60 @@
-import { Link, unstable_HistoryRouter } from 'react-router-dom';
+import {useEffect, useRef} from 'react';
 import {logout} from './utils.tsx';
-import { useNavigate, useLocation } from "react-router-dom";
+import { Link, unstable_HistoryRouter, useNavigate, useLocation} from "react-router-dom";
 
 const Navbar = (): JSX.Element => {
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
+  const links = useRef<HTMLDivElement | null>(null);
 
-  const clickMenuFunction = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    let links = document.getElementById("links");
-
-    if (links && links.style.display === "block") {
-      links.style.display = "none";
-    } else {
-      if (links) {
-        links.style.display = "block";
+  useEffect(() => {
+    function handleResize() {
+      if (!links.current) {
+        return
       }
+
+      const screenWidth = window.innerWidth;
+      const currentDisplay = links.current.style.display;
+
+      if (screenWidth > 500 && currentDisplay === "none") {
+        links.current.style.display = "block";
+      }
+
+      if (screenWidth < 500 && currentDisplay === "block") {
+        links.current.style.display = "none";
+      } 
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [])
+
+  const clickMenuFunction = () => {
+    if (!links.current) {
+      return
+    }
+    
+    const currentDisplay = links.current.style.display;
+
+    if (currentDisplay === "block") {
+      links.current.style.display = "none";
+    } else {
+      links.current.style.display = "block";
     }
   }
-
-  window.addEventListener('resize', function() {
-    const screenWidth = window.innerWidth;
-    let links = document.getElementById("links");
-
-    if (screenWidth > 500 && links && links.style.display === "none") {
-      links.style.display = "block";
-    }
-
-    if (screenWidth < 500 && links && links.style.display === "block") {
-      links.style.display = "none";
-    } 
-  });
 
   if(token){
     return (
       <nav className="usernavbar">
         <Link to="/" id="title">Calendar App</Link>
-        <div id="links">
+        <div id="links" ref={links}>
           <Link to="/Calendar">Calendar</Link>
           <Link to="/" onClick={()=>logout(navigate)}>Logout</Link>
         </div>
-
-        <a className="icon" onClick={(e) => clickMenuFunction(e)}>
+        <a className="icon" onClick={clickMenuFunction}>
           <i className="fa fa-bars"></i>
         </a>
       </nav>
@@ -49,12 +63,11 @@ const Navbar = (): JSX.Element => {
     return (
       <nav className="navbar">
         <Link to="/" id="title">Calendar App</Link>
-        <div id="links">
+        <div id="links" ref={links}>
           <Link to="/login">Login</Link>
           <Link to="/signup">Sign up</Link>
         </div>
-
-        <a className="icon" onClick={(e) => clickMenuFunction(e)}>
+        <a className="icon" onClick={clickMenuFunction}>
           <i className="fa fa-bars"></i>
         </a>
       </nav>

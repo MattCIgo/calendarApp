@@ -1,10 +1,10 @@
-import calendar from '../images/calendar.jpg'
-import calendarScreenShot from '../images/calendarScreenShot.png'
-import calendarScreenShot2 from '../images/calendarScreenShot2.png'
-import calendarScreenShot3 from '../images/calendarScreenShot3.png'
-import calendarScreenShot4 from '../images/calendarScreenShot4.png'
+import calendar from '../../images/calendar.jpg'
+import calendarScreenShot from '../../images/calendarScreenShot.png'
+import calendarScreenShot2 from '../../images/calendarScreenShot2.png'
+import calendarScreenShot3 from '../../images/calendarScreenShot3.png'
+import calendarScreenShot4 from '../../images/calendarScreenShot4.png'
 import React, {useState} from 'react'
-import Calendar from './Calendar'
+import Calendar from '../CalendarPage/Calendar'
 
 /** TODO: can't use image without import??? */
 const Homepage = (): JSX.Element => {

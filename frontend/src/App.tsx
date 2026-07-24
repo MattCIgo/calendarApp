@@ -1,8 +1,8 @@
 import Navbar from "./components/Navbar";
-import Homepage from "./components/Homepage";
-import Loginpage from "./components/Loginpage";
-import Signuppage from "./components/Signuppage";
-import Calendarpage from "./components/Calendarpage";
+import Homepage from "./components/Homepage/Homepage";
+import Loginpage from "./components/LoginPage/Loginpage";
+import Signuppage from "./components/SignupPage/Signuppage";
+import Calendarpage from "./components/CalendarPage/Calendarpage";
 import Emailactivation from "./components/Emailactivation";
 import { Route, Routes } from "react-router-dom";
 import { DateProvider } from "./contexts/DateContext";
