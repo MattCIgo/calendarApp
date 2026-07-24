@@ -2,6 +2,7 @@ import React, {MouseEvent, useState, useEffect, useContext} from "react";
 import DateContext from "../contexts/DateContext";
 import {deleteDiv, preventParentPropogation} from './utils.tsx';
 import NoteDiv from "./NoteDiv.tsx";
+import NoteNumberDiv from "./NoteNumberDiv.tsx";
 import Note from "../types/note.ts";
 
 interface calendarPageProps {
@@ -14,9 +15,9 @@ interface calendarPageProps {
 const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber }): JSX.Element => {
   const token = localStorage.getItem('token');
   const [visibleDay, setVisibleDay] = useState<number | null>(null);
+  const [visibleNoteNumber, setVisibleNoteNumber] = useState<number | null>(null);
   const [notes, setNotes]  = useState<Note[]>([]);
   const [textAreaValue, setTextareaValue] = useState<string>('');
-  //const noteCountsByDate: Record<string, number> = {};
   const monthDate = new Date(month + "-" + "1" + "-" + year); // date given passed month and year (day doesn't matter?>)
   const daysOfMonth: number[] = [];
   let firstDayOfMonthDate = new Date(year, monthNumber);
@@ -49,6 +50,7 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber }): JS
     })
   }, [])
 
+  // TODO: check noteCounts byDate array in console
   const noteCountsByDate = React.useMemo(() => {
     const counts: Record<string, number> = {};
 
@@ -93,68 +95,68 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber }): JS
 
 
   // function to delete Note
-  function deleteNote(id: number, day: number) {
-    fetch('http://localhost:8000/notes', {
-      method: 'POST',
-      headers: { "Content-Type" : "application/json",
-        "Authorization": `Token ${token}`,
-      },
-      body: JSON.stringify({"note_id": id,
-        "method": "deleteNote",
-      }),
-      }).then(response => {
-        if(!response.ok) {
-          return response.json().then(error => {
-            throw new Error(error.error);
-          })
-        }
+  // function deleteNote(id: number, day: number) {
+  //   fetch('http://localhost:8000/notes', {
+  //     method: 'POST',
+  //     headers: { "Content-Type" : "application/json",
+  //       "Authorization": `Token ${token}`,
+  //     },
+  //     body: JSON.stringify({"note_id": id,
+  //       "method": "deleteNote",
+  //     }),
+  //     }).then(response => {
+  //       if(!response.ok) {
+  //         return response.json().then(error => {
+  //           throw new Error(error.error);
+  //         })
+  //       }
 
-        return response.json();
-      }).then(data => {
-        console.log(data.message); 
-        setNotes(prevNotes => prevNotes.filter(note => note.pk !== id));
-      }).catch((error) =>{
-        alert(error);
-    })
+  //       return response.json();
+  //     }).then(data => {
+  //       console.log(data.message); 
+  //       setNotes(prevNotes => prevNotes.filter(note => note.pk !== id));
+  //     }).catch((error) =>{
+  //       alert(error);
+  //   })
 
-    return
-  }
+  //   return
+  // }
 
-  // shows the number of notes in lower right of day, click to see notes
-  const noteNumberDiv = (day: number): JSX.Element => {
-    let date = getFullDate(day, month, year.toString());
-    const count = noteCountsByDate[date] || 0;
+  // // shows the number of notes in lower right of day, click to see notes
+  // const noteNumberDiv = (day: number): JSX.Element => {
+  //   
+  //   const count = noteCountsByDate[date] || 0;
 
-    return (
-      <div className="noteNumber" title= 'Number of Notes' onClick={(e) => showNoteNumberDiv(day-1, e)}> 
-        {count}
-        <div className="showNotes" style={{display: "none"}} onClick={preventParentPropogation}>
-          <button className="popUpExitButton" onClick={(e) => deleteDiv(e, setTextareaValue)}>X</button>
-          <h1>Notes</h1>
-          <div id="notesContainer">
-            {notes && notes.filter(note => date === (note.fields.date).toString().replace(/-0+/g, '-')).map((note, index) =>
-              <div className="note" key={index}>
-                <div className="noteTitleFlexContainer">
-                  <button className="deleteNoteButton" onClick={() => deleteNote(note.pk, day)}>X</button>
-                  <h1>Note {index+1} {note.fields.date.toString()}:</h1>
-                </div>
-                <p>{note.fields.message}</p>
-              </div>)}
-          </div>
-        </div>
-      </div>  
-    );
-  }
+  //   return (
+  //     <div className="noteNumber" title= 'Number of Notes' onClick={(e) => showNoteNumberDiv(day-1, e)}> 
+  //       {count}
+  //       <div className="showNotes" style={{display: "none"}} onClick={preventParentPropogation}>
+  //         <button className="popUpExitButton" onClick={(e) => deleteDiv(e, setTextareaValue)}>X</button>
+  //         <h1>Notes</h1>
+  //         <div id="notesContainer">
+  //           {notes && notes.filter(note => date === (note.fields.date).toString().replace(/-0+/g, '-')).map((note, index) =>
+  //             <div className="note" key={index}>
+  //               <div className="noteTitleFlexContainer">
+  //                 <button className="deleteNoteButton" onClick={() => deleteNote(note.pk, day)}>X</button>
+  //                 <h1>Note {index+1} {note.fields.date.toString()}:</h1>
+  //               </div>
+  //               <p>{note.fields.message}</p>
+  //             </div>)}
+  //         </div>
+  //       </div>
+  //     </div>  
+  //   );
+  // }
 
-  const showNoteNumberDiv = (index: number, event: React.MouseEvent<HTMLDivElement>) => {
-    let showableDiv = document.getElementsByClassName("showNotes");
+  // const showNoteNumberDiv = (index: number, event: React.MouseEvent<HTMLDivElement>) => {
+  //   let showableDiv = document.getElementsByClassName("showNotes");
 
-    if ((showableDiv[index] as HTMLElement).style.display === "none") {
-      (showableDiv[index] as HTMLElement).style.display = "block";
-    } else {
-      (showableDiv[index] as HTMLElement).style.display = "none";
-    }
-  }
+  //   if ((showableDiv[index] as HTMLElement).style.display === "none") {
+  //     (showableDiv[index] as HTMLElement).style.display = "block";
+  //   } else {
+  //     (showableDiv[index] as HTMLElement).style.display = "none";
+  //   }
+  // }
 
   // shades present Day on calendar to indicate what day it is
   const presentDayShading = (day: number): Boolean => {
@@ -182,9 +184,14 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber }): JS
         backgroundColor: presentDayShading(day) ? 'rgba(112, 108, 108, 0.8)': 'rgba(255, 255, 255, 0.8)'}} key={index}>
           {day}
           <button className="createNoteButton"  onClick={() => setVisibleDay(visibleDay === day ? null : day)}>Create Note</button>
-          {noteNumberDiv(day)}
+          <div className="noteNumber" title= 'Number of Notes' onClick={() => setVisibleNoteNumber(visibleNoteNumber === day ? null : day)}>
+            {noteCountsByDate[getFullDate(day, month,year.toString())] ? noteCountsByDate[getFullDate(day, month,year.toString())] : 0}
+          </div>
           {visibleDay === day && <NoteDiv day={day} date={getFullDate(day, month, year.toString())} 
             setIsNoteDivVisible={() => setVisibleDay(null)} setNotes = {setNotes}/>}
+          {visibleNoteNumber === day && <NoteNumberDiv day={day} date={getFullDate(day, month, year.toString())}
+            setIsNoteNumberDivVisible={() => setVisibleNoteNumber(null)} notes={notes} setNotes={setNotes}
+            noteCountsByDate={noteCountsByDate}/> }
       </div>)}
     </div>
   );
