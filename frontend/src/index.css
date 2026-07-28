@@ -1,6 +1,10 @@
 /*TODO: make primery colors of app variables*/
 /*break up the file*/
 
+:root {
+  --primary-color: #0B0C10;
+}
+
 
 /* full App CSS */
 body {
@@ -11,7 +15,7 @@ body {
 /* User Navbar component CSS */
 .usernavbar {
   position: fixed;
-  background-color: #0B0C10;
+  background-color: var(--primary-color);
   width: 100vw;
   height: 70px;
   z-index: 10;
