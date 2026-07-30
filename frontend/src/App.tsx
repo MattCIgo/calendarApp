@@ -11,7 +11,7 @@ function App() {
   return (
     <DateProvider>
       <div className="App">      
-        <Navbar />
+        <Navbar/>
         <div className="page">
           <Routes>
             <Route path="/" element={<Homepage />} />

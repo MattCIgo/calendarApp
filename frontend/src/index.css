@@ -2,7 +2,9 @@
 /*break up the file*/
 
 :root {
-  --primary-color: #0B0C10;
+  --primary-color: #1F2833;
+  --secondary-color: #0B0C10;
+  --tertiary-color: #45A29E;
 }
 
 
@@ -15,7 +17,7 @@ body {
 /* User Navbar component CSS */
 .usernavbar {
   position: fixed;
-  background-color: var(--primary-color);
+  background-color: var(--secondary-color);
   width: 100vw;
   height: 70px;
   z-index: 10;
@@ -124,6 +126,11 @@ body {
   }
 }
 
+.page {
+  height: 100%;
+  padding-top: 70px;
+  background-color: #1F2833;
+}
 
 /* General Navbar component CSS */
 /* TODO: menu pops up on resize*/
@@ -235,10 +242,6 @@ body {
   }
 }
 
-.page {
-  padding-top: 70px;
-  height: calc(100vh - 70px);
-}
 
 
 /* Homepage CSS */
@@ -507,13 +510,13 @@ body {
 /* Loginpage CSS */
 /* TODO: could be better*/
 .loginContainer {
-  height: 100%;
-
   #backgroundImage{
-    display: block;
+    position: fixed;
     opacity: .5;
     height: 100%;
-    width: 100vw;
+    width: 100%;
+    object-fit: cover;
+    z-index: -1; 
   }
 
   .loginBox {
@@ -614,13 +617,13 @@ body {
 
 /* Signuppage CSS */
 .signupContainer {
-  height: 100%;
-
   #backgroundImage{
-    display: block;
+    position: fixed;
     opacity: .5;
     height: 100%;
-    width: 100vw;
+    width: 100%;
+    object-fit: cover;
+    z-index: -1; 
   }
 
   .signupBox {
