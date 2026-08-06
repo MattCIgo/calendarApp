@@ -1,4 +1,5 @@
 import Note from "../../types/note.ts";
+import './Calendarpage.css';
 
 interface NoteNumberDivProps {
   date: string,

@@ -1,4 +1,4 @@
-
+import './Calendarpage.css';
 
 const SearchNotesComponent = (): JSX.Element => {
 

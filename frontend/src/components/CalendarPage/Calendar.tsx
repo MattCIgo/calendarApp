@@ -3,6 +3,7 @@ import DateContext from "../../contexts/DateContext.tsx";
 import NoteDiv from "./NoteDiv.tsx";
 import NoteNumberDiv from "./NoteNumberDiv.tsx";
 import Note from "../../types/note.ts";
+import './Calendarpage.css';
 
 interface calendarPageProps {
   month: string;

@@ -1,5 +1,6 @@
 import Calendar from "./Calendar";
 import React, {useState, useEffect} from "react";
+import './Calendarpage.css';
 
 const Calendarpage = (): JSX.Element => {
   const token = localStorage.getItem('token');
