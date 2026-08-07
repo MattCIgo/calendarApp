@@ -1,7 +1,8 @@
-import fall from '../../images/fall.jpg';
-import React, {useState} from 'react';
-import {login} from '.././utils.tsx';
-import { useNavigate } from "react-router-dom";
+import fall from '../../images/fall.jpg'
+import React, {useState} from 'react'
+import {login} from '.././utils.tsx'
+import { useNavigate } from "react-router-dom"
+import "./Loginpage.css"
 
 const Loginpage = (): JSX.Element => {
   let [email, setEmail] = useState('');

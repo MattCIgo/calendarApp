@@ -1,7 +1,14 @@
-import './Calendarpage.css';
+import React, {useState} from "react"
+import Note from "../../types/note.ts"
+import './Calendarpage.css'
+
+interface SearchNotesProps {
+  notes: Note[],
+  //TODO: deleteNote funciton i NoteNumberDiv
+}
 
 const SearchNotesComponent = (): JSX.Element => {
-
+  const [searchedNotes, setSearchedNotes]  = useState<Note[]>([]);
 
   return (
     <div id="searchedNotesContainer">

@@ -5,6 +5,7 @@ import calendarScreenShot3 from '../../images/calendarScreenShot3.png'
 import calendarScreenShot4 from '../../images/calendarScreenShot4.png'
 import React, {useState} from 'react'
 import Calendar from '../CalendarPage/Calendar'
+import './Homepage.css'
 
 /** TODO: can't use image without import??? */
 const Homepage = (): JSX.Element => {

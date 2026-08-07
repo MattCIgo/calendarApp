@@ -1,0 +1,105 @@
+
+.loginContainer {
+  #backgroundImage{
+    position: fixed;
+    opacity: .5;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    z-index: -1; 
+  }
+
+  .loginBox {
+    position: absolute;
+    top: 70px;
+    bottom: 0;
+    left: 0; 
+    right: 0; 
+    margin-left: auto; 
+    margin-right: auto; 
+    margin-top: auto;
+    margin-bottom: auto;
+
+    #loginCredentialsContainer {
+      position: absolute;
+      background-color: rgb(74, 74, 95);
+      height: fit-content;
+      width: fit-content; /*same as width of login box*/
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 25px;
+
+      h1{
+        text-align: center;
+        color:#45A29E;
+      }
+
+      #email {
+        width: fit-content;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        margin-left: 50px;
+        margin-right: 50px;
+        margin-bottom: 25px;
+      }
+
+      #password{
+        width: fit-content;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        margin-left: 50px;
+        margin-right: 50px;
+        margin-bottom: 25px;
+      }
+
+      #login{
+        display: block;
+        background-color: #1F2833;
+        text-align: center;
+        margin: 0 auto;
+        margin-bottom: 20px;
+        width: 150px;
+        height: 30px;
+        max-width: 150px;
+        border-radius: 15px;
+        border-color: #45A29E;
+      }
+
+      #forgotPassword {
+        display: block;
+        text-align: center;
+        margin: 0 auto;
+        margin-bottom: 30px;
+
+      }
+    }
+  }
+
+  /*TODO: even smaller media query*/
+  @media screen and (max-width: 500px){
+    .loginBox {
+      background-color: rgb(74, 74, 95);
+      height: calc(100vh - 70px);
+      width: 100vw;
+
+      #loginCredentialsContainer {
+        width: 100vw;
+        height: fit-content;
+        border-radius: 0;
+
+        #email {
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        #password {
+          margin-left: auto;
+          margin-right: auto;
+        }
+      }
+    }  
+  }
+}

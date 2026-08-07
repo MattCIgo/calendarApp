@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import Note from "../../types/note.ts";
-import './Calendarpage.css';
+import React, { useState } from 'react'
+import Note from "../../types/note.ts"
+import './Calendarpage.css'
 
 interface NoteDivProps {
   date: string,

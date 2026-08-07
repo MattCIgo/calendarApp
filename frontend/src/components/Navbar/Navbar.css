@@ -1,0 +1,221 @@
+/* User Navbar component CSS */
+.usernavbar {
+  position: fixed;
+  background-color: var(--secondary-color);
+  width: 100vw;
+  height: 70px;
+  z-index: 10;
+
+  #links {
+    margin-top: 25px;
+    float: right;
+    display: block;
+  }
+
+  a.icon {
+    display: none;
+    position: absolute;
+    height: fit-content;
+    font-size: 30px;
+    right: 15px;
+    top: 20px;
+  }
+
+  #title {
+    font-size: 30px;
+    margin-top: 15px;
+    margin-left: 20px;
+    display: inline-block;
+  }
+  
+  a {
+    text-decoration: none;
+    color: #45A29E;
+  }
+
+  #links a {
+    float: left;
+    margin-right: 25px;
+  }
+
+  a:hover{
+    color: rgb(55, 55, 212);
+  }
+
+  a.icon:hover {
+    background-color: #ddd;
+    color: black;
+  }
+
+  @media screen and (max-width: 500px) {
+    #title {
+      font-size: 20px;
+      margin-top: 23px;
+    }
+
+    a:hover { 
+      background-color: #ddd;
+      color: black;
+    }
+
+    a.icon {
+      display: block;
+    }
+
+    a.icon:hover {
+      cursor: pointer;
+    }
+
+    /*TODO: get links in reverse order, flexbox display not working?, close menu onclick */
+    #links {
+      background-color: #2e3241;
+      display: none;
+      flex-direction: column;
+      margin-top: 70px;
+      height: 50vh;
+      width: 50vw;
+      border-radius: 25px;
+    }
+
+    #links a {
+      background-color: rgb(40, 40, 56);
+      margin-right: 1vw;
+      margin-top: 5px;
+      margin-bottom: 5px;
+      width: 48vw;
+      font-size: 25px;
+      text-align: center;
+      padding-top: 5px; 
+      padding-bottom: 5px;
+      border-radius: 25px;
+    }
+  }
+
+  @media screen and (max-width: 280px) {
+    #title {
+      font-size: 15px;
+      margin-top: 27.5px;
+    }
+
+    #links {
+      width: 35vw;
+    }
+
+    #links a {
+      width: 33vw;
+      font-size: 18px;
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+  }
+}
+
+
+/* General Navbar component CSS */
+.navbar {
+  position: fixed;
+  background-color: #0B0C10;
+  width: 100vw;
+  height: 70px;
+  z-index: 10;
+
+  #links {
+    margin-top: 25px;
+    margin-right: 10px;
+    float: right;
+    display: block;
+  }
+
+  a.icon {
+    display: none;
+    position: absolute;
+    height: fit-content;
+    font-size: 30px;
+    right: 15px;
+    top: 20px;
+  }
+
+  #title {
+    font-size: 30px;
+    margin-top: 15px;
+    margin-left: 20px;
+    display: inline-block;
+  }
+  
+  a {
+    text-decoration: none;
+    color: #45A29E;
+  }
+
+  #links a {
+    float: left;
+    margin-right: 15px;
+  }
+
+  a:hover{
+    color: rgb(55, 55, 212);
+  }
+
+  a.icon:hover {
+    background-color: #ddd;
+    color: black;
+  }
+
+  @media screen and (max-width: 500px) {
+    #title {
+      font-size: 20px;
+      margin-top: 23px;
+    }
+
+    a:hover { 
+      background-color: #ddd;
+      color: black;
+    }
+
+    a.icon {
+      display: block;
+    }
+
+    a.icon:hover {
+      cursor: pointer;
+    }
+
+    #links {
+      background-color: #2e3241;
+      display: none;
+      height: fit-content;
+      width: 50vw;
+      margin-top: 70px;
+      border-radius: 25px;
+    }
+
+    #links a {
+      background-color: rgb(40, 40, 56);
+      margin: 5px 1vw;
+      width: 48vw;
+      font-size: 25px;
+      text-align: center;
+      padding-top: 5px; 
+      padding-bottom: 5px;
+      border-radius: 25px;
+    }
+  }
+
+   @media screen and (max-width: 280px) {
+    #title {
+      font-size: 15px;
+      margin-top: 27.5px;
+    }
+
+    #links {
+      width: 35vw;
+    }
+
+    #links a {
+      width: 33vw;
+      font-size: 18px;
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+  }
+}

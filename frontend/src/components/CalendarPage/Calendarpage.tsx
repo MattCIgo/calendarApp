@@ -1,6 +1,7 @@
-import Calendar from "./Calendar";
-import React, {useState, useEffect} from "react";
-import './Calendarpage.css';
+import Calendar from "./Calendar"
+import React, {useState, useEffect} from "react"
+import Note from "../../types/note.ts"
+import './Calendarpage.css'
 
 const Calendarpage = (): JSX.Element => {
   const token = localStorage.getItem('token');
@@ -11,18 +12,6 @@ const Calendarpage = (): JSX.Element => {
   let [searchParameters, setSearchParameters] = useState <string[]>(['', '', '']);
   let [orderDropdown, setOrderDropdown] = useState("Order By...");
   const [searchedNotes, setSearchedNotes]  = useState<Note[]>([]);
-
-  interface Note {
-    [key: number]: any; // needed for typescript indexing ( need string or number etc???)
-    pk: number,
-    model: string,
-    fields: {
-      user_id: number,
-      message: string,
-      date_created: Date,
-      date: Date,
-    }
-  }
 
   const handleLeftButton = (e: React.MouseEvent) => {
     e.preventDefault();
