@@ -4,7 +4,7 @@ import Note from "../../types/note.ts"
 
 export function createNote(textAreaValue: string, setTextAreaValue: React.Dispatch<React.SetStateAction<string>>, 
   setNotes: React.Dispatch<React.SetStateAction<Note[]>>, date: string) {
-    
+  const token = localStorage.getItem('token'); 
   const message = textAreaValue;
   setTextAreaValue('');
 
@@ -35,7 +35,6 @@ export function createNote(textAreaValue: string, setTextAreaValue: React.Dispat
 
       // TODO: optional parameters for when needing to setNotes or setSearchedNotes
       setNotes(prevNotes => [...prevNotes, createdNote[0]]);
-      setSearchedNotes(searchedNotes => searchedNotes && searchedNotes.filter(note =>note &&  note.pk !== id));
     }).catch((error) =>{
       alert(error);
   })
@@ -44,7 +43,10 @@ export function createNote(textAreaValue: string, setTextAreaValue: React.Dispat
 }
 
 
-function deleteNote(id: number) {
+export function deleteNote(id: number, setNotes: React.Dispatch<React.SetStateAction<Note[]>> | null,
+  setSearchedNotes: React.Dispatch<React.SetStateAction<Note[]>> | null) {
+  const token = localStorage.getItem('token'); 
+
   fetch('http://localhost:8000/notes', {
     method: 'POST',
     headers: { "Content-Type" : "application/json",
@@ -63,7 +65,12 @@ function deleteNote(id: number) {
       return response.json();
     }).then(data => {
       console.log(data.message); 
-      setNotes(prevNotes => prevNotes.filter(note => note.pk !== id));
+      if (setNotes) {
+        setNotes(prevNotes => prevNotes.filter(note => note.pk !== id));
+      } 
+      if (setSearchedNotes) {
+        setSearchedNotes(searchedNotes => searchedNotes && searchedNotes.filter(note =>note &&  note.pk !== id));
+      }
     }).catch((error) =>{
       alert(error);
   })

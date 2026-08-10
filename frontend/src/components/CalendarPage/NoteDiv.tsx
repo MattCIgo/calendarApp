@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Note from "../../types/note.ts"
 import './Calendarpage.css'
+import {createNote} from './calendarUtils.tsx'
 
 interface NoteDivProps {
   date: string,
@@ -12,44 +13,7 @@ interface NoteDivProps {
 
 // TODO: update notenumber
 function NoteDiv({date, day, setIsNoteDivVisible, setNotes}: NoteDivProps) {
-  const token = localStorage.getItem('token');
   const [textAreaValue, setTextareaValue] = useState<string>('');
-
-  function createNote() {
-    const message = textAreaValue;
-    setTextareaValue('');
-
-    if (message.length === 0) {
-      return alert("Type a Message");
-    }
-
-    fetch('http://localhost:8000/notes', {
-      method: 'POST',
-      headers: { "Content-Type" : "application/json",
-        "Authorization": `Token ${token}`,
-      },
-      body: JSON.stringify({"message" : message,
-        "date" : date,
-        "method" : "createNote",
-      }),
-      }).then(response => {
-        if(!response.ok) {
-          return response.json().then(error => {
-            throw new Error(error.error);
-          })
-        }
-
-        return response.json();
-      }).then(data => {
-        const createdNote = JSON.parse(data[0].return_note);
-        console.log(createdNote);
-        setNotes(prevNotes => [...prevNotes, createdNote[0]]);
-      }).catch((error) =>{
-        alert(error);
-    })
-
-    return
-  }
 
   const handleNoteChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (event.target) {
@@ -64,7 +28,9 @@ function NoteDiv({date, day, setIsNoteDivVisible, setNotes}: NoteDivProps) {
       <label id="labelNoteBox" htmlFor="createNoteTextBox">Enter Note?</label>
       <div id="textAreaDiv">
         <textarea id="createNoteTextBox" value={textAreaValue} placeholder="..." onChange={(event) => handleNoteChange(event)}></textarea>
-        <button className="popUpAcceptButton" onClick= {() => createNote()}>Accept</button>
+        <button className="popUpAcceptButton" onClick= {() => createNote(
+          textAreaValue, setTextareaValue, setNotes, date
+        )}>Accept</button>
         <button className="popUpCancelButton" onClick= {() => setIsNoteDivVisible((prev) => !prev)}>Cancel</button>
       </div> 
     </div>

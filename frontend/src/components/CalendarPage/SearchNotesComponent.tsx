@@ -1,6 +1,7 @@
 import React, {useState} from "react"
 import Note from "../../types/note.ts"
 import './Calendarpage.css'
+import {deleteNote} from "./calendarUtils.tsx"
 
 interface SearchNotesProps {
   notes: Note[],
@@ -39,6 +40,8 @@ const SearchNotesComponent = (): JSX.Element => {
   }
 
   const getNotes = () => {
+    const token = localStorage.getItem('token');
+
     const queryParamsObj = {
       "keyWords": searchParameters[0],
       "startDate": searchParameters[1],
@@ -74,7 +77,6 @@ const SearchNotesComponent = (): JSX.Element => {
   }
 
   const searchedNotesDiv = () => {
-
     return (
       <div id="searchedNotesContainer">
         <h1 id="resultsTitle">Search Results:</h1>
@@ -82,7 +84,7 @@ const SearchNotesComponent = (): JSX.Element => {
           {searchedNotes && searchedNotes.map((note, index) =>
             <div className="note" key={index}>
               <div className="noteTitleFlexContainer">
-                <button className="deleteNoteButton" onClick={() => deleteNote(note.pk)}>X</button>
+                <button className="deleteNoteButton" onClick={() => deleteNote(note.pk, null, setSearchedNotes)}>X</button>
                 <h1>Note {index+1} {note.fields.date.toString()}:</h1>
               </div>
               <p>{note.fields.message}</p>
