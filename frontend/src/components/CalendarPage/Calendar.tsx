@@ -9,14 +9,15 @@ interface calendarPageProps {
   month: string;
   year: number;
   monthNumber: number;
+  notes: Note[],
+  setNotes: React.Dispatch<React.SetStateAction<Note[]>>
 }
 
 // TODO: use hooks and use states, etc...
-const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber }): JSX.Element => {
+const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber, notes, setNotes }): JSX.Element => {
   const token = localStorage.getItem('token');
   const [visibleDay, setVisibleDay] = useState<number | null>(null);
   const [visibleNoteNumber, setVisibleNoteNumber] = useState<number | null>(null);
-  const [notes, setNotes]  = useState<Note[]>([]);
   const monthDate = new Date(month + "-" + "1" + "-" + year);
   const daysOfMonth: number[] = [];
   let firstDayOfMonthDate = new Date(year, monthNumber);

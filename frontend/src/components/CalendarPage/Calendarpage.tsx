@@ -10,6 +10,7 @@ const Calendarpage = (): JSX.Element => {
   const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   let [monthIndex, setMonthIndex] = useState(currentDate.getMonth());
   let [year, setYear] = useState(currentDate.getFullYear());
+  const [notes, setNotes]  = useState<Note[]>([]);
 
   const handleLeftButton = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -35,41 +36,14 @@ const Calendarpage = (): JSX.Element => {
     setMonthIndex(newMonthIndex);
   }
 
-
-  // function to delete Note
-  function deleteNote(id: number) {
-    fetch('http://localhost:8000/notes', {
-      method: 'POST',
-      headers: { "Content-Type" : "application/json",
-        "Authorization": `Token ${token}`,
-      },
-      body: JSON.stringify({"note_id": id,
-        "method": "deleteNote",
-      }),
-      }).then(response => {
-        if(!response.ok) {
-          return response.json().then(error => {
-            throw new Error(error.error);
-          })
-        }
-
-        return response.json();
-      }).then(data => {
-        console.log(data.message); 
-      }).catch((error) =>{
-        alert(error);
-    })
-
-    return
-  }
-
   return (
     <div className="calendarPageContainer">
       <div id="month">{months[monthIndex]} {year}</div>
-      <Calendar year={year} month={months[monthIndex]} monthNumber={monthIndex}/>
+      <Calendar year={year} month={months[monthIndex]} monthNumber={monthIndex} 
+        notes={notes} setNotes={setNotes}/>
       <button id="leftCalendarButton" onClick={(e) => handleLeftButton(e)}>{'<'}</button>
       <button id="rightCalendarButton" onClick={(e) => handleRightButton(e)}>{'>'}</button>
-      <SearchNotesComponent />
+      <SearchNotesComponent setNotes={setNotes}/>
     </div>
   );
 }

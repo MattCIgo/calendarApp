@@ -4,11 +4,10 @@ import './Calendarpage.css'
 import {deleteNote} from "./calendarUtils.tsx"
 
 interface SearchNotesProps {
-  notes: Note[],
-  //TODO: deleteNote funciton i NoteNumberDiv
+  setNotes: React.Dispatch<React.SetStateAction<Note[]>>
 }
 
-const SearchNotesComponent = (): JSX.Element => {
+const SearchNotesComponent: React.FC<SearchNotesProps> = ({setNotes}): JSX.Element => {
   const [searchedNotes, setSearchedNotes]  = useState<Note[]>([]);
   const [searchParameters, setSearchParameters] = useState <string[]>(['', '', '']);
   const [orderDropdown, setOrderDropdown] = useState("Order By...");
@@ -84,7 +83,7 @@ const SearchNotesComponent = (): JSX.Element => {
           {searchedNotes && searchedNotes.map((note, index) =>
             <div className="note" key={index}>
               <div className="noteTitleFlexContainer">
-                <button className="deleteNoteButton" onClick={() => deleteNote(note.pk, null, setSearchedNotes)}>X</button>
+                <button className="deleteNoteButton" onClick={() => deleteNote(note.pk, setNotes, setSearchedNotes)}>X</button>
                 <h1>Note {index+1} {note.fields.date.toString()}:</h1>
               </div>
               <p>{note.fields.message}</p>
