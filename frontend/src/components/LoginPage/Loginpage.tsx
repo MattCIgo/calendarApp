@@ -1,7 +1,7 @@
 import fall from '../../images/fall.jpg'
 import React, {useState} from 'react'
 import {login} from '.././utils.tsx'
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import "./Loginpage.css"
 
 const Loginpage = (): JSX.Element => {
@@ -33,7 +33,7 @@ const Loginpage = (): JSX.Element => {
               <input type="text" id="passwordText" name="password" onChange={(e) => updatePassword(e)}></input> 
             </div> 
             <input type="button" id="login" name="login" value="Login" onClick={()=>login(email, password, navigate)}></input>
-            <a id="forgotPassword">Forgot Password?</a>
+            <Link to="/RecoverPassword" id="recoverPageLink">Forgot Password?</Link>
           </form>
         </div>
       </div>

@@ -34,7 +34,6 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber, notes
     dayNumber++;
   }
   
-
   // get the initial notes from server
   // TODO; I/O bound, make thread?
   useEffect (() => {
@@ -109,6 +108,16 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber, notes
     }
   }
 
+  function handleNoteDivOpening (day: number) {
+    setVisibleDay(visibleDay === day ? null : day);
+    setVisibleNoteNumber(null);
+  }
+
+  function handleNoteNumberDivOpening (day: number) {
+    setVisibleNoteNumber(visibleNoteNumber === day ? null : day)
+    setVisibleDay(null);
+  }
+
   return (
     <div className="calendarContainer">
       <div className="calendarDays">Sunday</div>
@@ -122,8 +131,8 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber, notes
       <div className="numberedDays" style={{gridColumnStart: index === 0 ? firstDayOfMonth + 1 : 'auto', 
         backgroundColor: presentDayShading(day) ? 'rgba(112, 108, 108, 0.8)': 'rgba(255, 255, 255, 0.8)'}} key={index}>
           {day}
-          <button className="createNoteButton"  onClick={() => setVisibleDay(visibleDay === day ? null : day)}>Create Note</button>
-          <div className="noteNumber" title= 'Number of Notes' onClick={() => setVisibleNoteNumber(visibleNoteNumber === day ? null : day)}>
+          <button className="createNoteButton"  onClick={() => handleNoteDivOpening(day)}>Create Note</button>
+          <div className="noteNumber" title= 'Number of Notes' onClick={() => handleNoteNumberDivOpening(day)}>
             {noteCountsByDate[getFullDate(day, month,year.toString())] ? noteCountsByDate[getFullDate(day, month,year.toString())] : 0}
           </div>
           {visibleDay === day && <NoteDiv day={day} date={getFullDate(day, month, year.toString())} 
