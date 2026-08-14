@@ -4,7 +4,7 @@ import calendarScreenShot2 from '../../images/calendarScreenShot2.png'
 import calendarScreenShot3 from '../../images/calendarScreenShot3.png'
 import calendarScreenShot4 from '../../images/calendarScreenShot4.png'
 import React, {useState} from 'react'
-import Calendar from '../CalendarPage/Calendar'
+import Calendar from '../CalendarPage/Calendar.tsx'
 import './Homepage.css'
 
 /** TODO: can't use image without import??? */

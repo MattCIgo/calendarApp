@@ -9,8 +9,8 @@ interface calendarPageProps {
   month: string;
   year: number;
   monthNumber: number;
-  notes: Note[],
-  setNotes: React.Dispatch<React.SetStateAction<Note[]>>
+  notes?: Note[],
+  setNotes?: React.Dispatch<React.SetStateAction<Note[]>>,
 }
 
 // TODO: use hooks and use states, etc...
@@ -54,7 +54,9 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber, notes
         return response.json();
       }).then(data => {
         const jsonString = JSON.parse(data);
-        setNotes(jsonString);
+        if (setNotes) {
+          setNotes(jsonString);
+        }
       }).catch((error) =>{
         // TODO: parse error message/ how to replaces email with default object to access error? for loop?
         alert(error.message);
@@ -65,13 +67,16 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber, notes
   const noteCountsByDate = React.useMemo(() => {
     const counts: Record<string, number> = {};
 
-    notes.forEach((note) => {
-      if (note && note.fields && note.fields.date) {
-        const noteDateStr = note.fields.date.toString().replace(/-0+/g, '-');
-        counts[noteDateStr] = (counts[noteDateStr] || 0) + 1;
-      }
-    });
-
+    // TODO: notes is undefined here?
+    if(notes) {
+      notes.forEach((note) => {
+        if (note && note.fields && note.fields.date) {
+          const noteDateStr = note.fields.date.toString().replace(/-0+/g, '-');
+          counts[noteDateStr] = (counts[noteDateStr] || 0) + 1;
+        }
+      });
+    }
+    
     return counts;
   }, [notes])
 
@@ -122,9 +127,9 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber, notes
             {noteCountsByDate[getFullDate(day, month,year.toString())] ? noteCountsByDate[getFullDate(day, month,year.toString())] : 0}
           </div>
           {visibleDay === day && <NoteDiv day={day} date={getFullDate(day, month, year.toString())} 
-            setIsNoteDivVisible={() => setVisibleDay(null)} setNotes = {setNotes}/>}
+            setIsNoteDivVisible={() => setVisibleDay(null)} setNotes = {setNotes ?? null}/>}
           {visibleNoteNumber === day && <NoteNumberDiv date={getFullDate(day, month, year.toString())}
-            setIsNoteNumberDivVisible={() => setVisibleNoteNumber(null)} notes={notes} setNotes={setNotes}/> }
+            setIsNoteNumberDivVisible={() => setVisibleNoteNumber(null)} notes={notes ?? null} setNotes={setNotes ?? null}/> }
       </div>)}
     </div>
   );

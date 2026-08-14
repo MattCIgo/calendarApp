@@ -4,7 +4,7 @@ import './Calendarpage.css'
 import {deleteNote} from "./calendarUtils.tsx"
 
 interface SearchNotesProps {
-  setNotes: React.Dispatch<React.SetStateAction<Note[]>>
+  setNotes: React.Dispatch<React.SetStateAction<Note[]>> | null
 }
 
 const SearchNotesComponent: React.FC<SearchNotesProps> = ({setNotes}): JSX.Element => {

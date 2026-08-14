@@ -7,7 +7,7 @@ interface NoteDivProps {
   date: string,
   day: number,
   setIsNoteDivVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  setNotes: React.Dispatch<React.SetStateAction<Note[]>>;
+  setNotes: React.Dispatch<React.SetStateAction<Note[]>> | null;
 }
 
 
