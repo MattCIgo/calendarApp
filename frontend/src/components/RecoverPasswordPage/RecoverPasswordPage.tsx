@@ -1,5 +1,5 @@
 import fall from '../../images/fall.jpg'
-import "./RecoverPasswordPage.css"
+import "./recover-password.css"
 
 const RecoverPasswordPage = (): JSX.Element => {
   return (

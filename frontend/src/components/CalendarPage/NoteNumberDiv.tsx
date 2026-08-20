@@ -1,12 +1,12 @@
 import Note from "../../types/note.ts"
-import './Calendarpage.css'
+import './calendar-page.css'
 import {deleteNote} from "./calendarUtils.tsx"
 
 interface NoteNumberDivProps {
   date: string,
   setIsNoteNumberDivVisible: React.Dispatch<React.SetStateAction<boolean>>,
   notes: Note[] | null,
-  setNotes: React.Dispatch<React.SetStateAction<Note[]>> | null
+  setNotes: React.Dispatch<React.SetStateAction<Note[]>>
 }
 
 function NoteNumberDiv ({date, setIsNoteNumberDivVisible, notes, setNotes}: NoteNumberDivProps) {
@@ -22,7 +22,7 @@ function NoteNumberDiv ({date, setIsNoteNumberDivVisible, notes, setNotes}: Note
         {notes && notes.filter(note => date === (note.fields.date).toString().replace(/-0+/g, '-')).map((note, index) =>
           <div className="note" key={index}>
             <div className="noteTitleFlexContainer">
-              <button className="deleteNoteButton" onClick={() => deleteNote(note.pk, setNotes, null)}>X</button>
+              <button className="deleteNoteButton" onClick={() => deleteNote(note.pk, setNotes)}>X</button>
               <h1>Note {index+1}:</h1>
             </div>
             <p>{note.fields.message}</p>

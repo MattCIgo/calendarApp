@@ -3,14 +3,14 @@ import DateContext from "../../contexts/DateContext.tsx"
 import NoteDiv from "./NoteDiv.tsx"
 import NoteNumberDiv from "./NoteNumberDiv.tsx"
 import Note from "../../types/note.ts"
-import './Calendarpage.css'
+import './calendar-page.css'
 
 interface calendarPageProps {
   month: string;
   year: number;
   monthNumber: number;
-  notes?: Note[],
-  setNotes?: React.Dispatch<React.SetStateAction<Note[]>>,
+  notes: Note[],
+  setNotes: React.Dispatch<React.SetStateAction<Note[]>>,
 }
 
 // TODO: use hooks and use states, etc...

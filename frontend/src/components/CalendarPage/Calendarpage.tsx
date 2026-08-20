@@ -2,7 +2,7 @@ import Calendar from "./Calendar"
 import React, {useState, useEffect} from "react"
 import SearchNotesComponent from "./SearchNotesComponent.tsx"
 import Note from "../../types/note.ts"
-import './Calendarpage.css'
+import './calendar-page.css'
 
 const Calendarpage = (): JSX.Element => {
   const token = localStorage.getItem('token');

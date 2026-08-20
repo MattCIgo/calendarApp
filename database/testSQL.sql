@@ -12,6 +12,12 @@ from public.user;
 select *
 from public.authtoken_token;
 
+select * 
+from public.auth_permission;
+
+select * 
+from public.django_session;
+
 
 select * 
 from public.user_note;

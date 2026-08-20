@@ -1,7 +1,7 @@
 import {useEffect, useRef} from 'react';
 import {logout} from '../utils.tsx';
 import { Link, unstable_HistoryRouter, useNavigate, useLocation} from "react-router-dom";
-import "./Navbar.css"
+import "./nav-bar.css"
 
 const Navbar = (): JSX.Element => {
   const token = localStorage.getItem('token');

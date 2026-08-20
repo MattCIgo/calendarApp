@@ -33,7 +33,8 @@ export function logout(navigate: NavigateFunction) {
 }
 
 // Login function
-export function login(email: string, password: string, navigate: NavigateFunction) {
+export function login(email: string, password: string, navigate: NavigateFunction, event: React.FormEvent<HTMLFormElement>) {
+  event.preventDefault();
 
   // Check for empty Strings
   if (!email || !password) {

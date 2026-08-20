@@ -24,7 +24,7 @@
       position: absolute;
       background-color: rgb(74, 74, 95);
       height: fit-content;
-      width: fit-content; /*same as width of login box*/
+      width: fit-content; 
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);

@@ -2,20 +2,12 @@ import fall from '../../images/fall.jpg'
 import React, {useState} from 'react'
 import {login} from '.././utils.tsx'
 import { useNavigate, Link } from "react-router-dom"
-import "./Loginpage.css"
+import "./login-page.css"
 
 const Loginpage = (): JSX.Element => {
   let [email, setEmail] = useState('');
   let [password, setPassword] = useState('');
   const navigate = useNavigate();
-
-  const updateEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-  }
-
-  const updatePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-  }
 
   return (
     <div className="loginContainer">
@@ -23,16 +15,16 @@ const Loginpage = (): JSX.Element => {
       <div className="loginBox">
         <div id="loginCredentialsContainer">
           <h1>Login</h1>
-          <form>
+          <form onSubmit={(event)=>login(email, password, navigate, event)}>
             <div id="email">
               <label id="emailLabel">Email: </label>
-              <input type="text" id="emailText" name="email" onChange={(e) => updateEmail(e)}></input>
+              <input type="text" id="emailText" name="email" onChange={(e) => setEmail(e.target.value)}></input>
             </div>
             <div id="password">
               <label id="passwordLabel">Password: </label>
-              <input type="text" id="passwordText" name="password" onChange={(e) => updatePassword(e)}></input> 
+              <input type="password" id="passwordText" name="password" onChange={(e) => setPassword(e.target.value)}></input> 
             </div> 
-            <input type="button" id="login" name="login" value="Login" onClick={()=>login(email, password, navigate)}></input>
+            <button type="submit" id="login">Submit</button>
             <Link to="/RecoverPassword" id="recoverPageLink">Forgot Password?</Link>
           </form>
         </div>

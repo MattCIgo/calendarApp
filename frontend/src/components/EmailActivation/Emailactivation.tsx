@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import "./Emailactivation.css"
+import "./email-activation.css"
 
 //TODO: better error checking, UIDB64 is undefined now
 const EmailActivation = () => {

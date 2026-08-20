@@ -3,7 +3,7 @@ import Note from "../../types/note.ts"
 // TODO: pass setNotes and setSearchedNtoes parameters and textareavalues
 
 export function createNote(textAreaValue: string, setTextAreaValue: React.Dispatch<React.SetStateAction<string>>, 
-  setNotes: React.Dispatch<React.SetStateAction<Note[]>> | null, date: string) {
+  date: string, setNotes?: React.Dispatch<React.SetStateAction<Note[]>>) {
   const token = localStorage.getItem('token'); 
   const message = textAreaValue;
   setTextAreaValue('');
@@ -45,8 +45,8 @@ export function createNote(textAreaValue: string, setTextAreaValue: React.Dispat
 }
 
 
-export function deleteNote(id: number, setNotes: React.Dispatch<React.SetStateAction<Note[]>> | null,
-  setSearchedNotes: React.Dispatch<React.SetStateAction<Note[]>> | null) {
+export function deleteNote(id: number, setNotes?: React.Dispatch<React.SetStateAction<Note[]>>,
+  setSearchedNotes?: React.Dispatch<React.SetStateAction<Note[]>>) {
   const token = localStorage.getItem('token'); 
 
   fetch('http://localhost:8000/notes', {

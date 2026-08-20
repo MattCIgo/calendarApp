@@ -1,10 +1,10 @@
 import React, {useState} from "react"
 import Note from "../../types/note.ts"
-import './Calendarpage.css'
+import './calendar-page.css'
 import {deleteNote} from "./calendarUtils.tsx"
 
 interface SearchNotesProps {
-  setNotes: React.Dispatch<React.SetStateAction<Note[]>> | null
+  setNotes: React.Dispatch<React.SetStateAction<Note[]>>
 }
 
 const SearchNotesComponent: React.FC<SearchNotesProps> = ({setNotes}): JSX.Element => {

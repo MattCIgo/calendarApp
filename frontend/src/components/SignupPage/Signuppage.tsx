@@ -1,6 +1,6 @@
 import { json } from "react-router-dom";
 import fall from '../../images/fall.jpg'
-import "./Singuppage.css"
+import "./signup-page.css"
 
 const Signuppage = (): JSX.Element => {
 

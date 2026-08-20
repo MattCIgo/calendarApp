@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import Note from "../../types/note.ts"
-import './Calendarpage.css'
+import './calendar-page.css'
 import {createNote} from './calendarUtils.tsx'
 
 interface NoteDivProps {
   date: string,
   day: number,
   setIsNoteDivVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  setNotes: React.Dispatch<React.SetStateAction<Note[]>> | null;
+  setNotes: React.Dispatch<React.SetStateAction<Note[]>>;
 }
 
 
@@ -29,7 +29,7 @@ function NoteDiv({date, day, setIsNoteDivVisible, setNotes}: NoteDivProps) {
       <div id="textAreaDiv">
         <textarea id="createNoteTextBox" value={textAreaValue} placeholder="..." onChange={(event) => handleNoteChange(event)}></textarea>
         <button className="popUpAcceptButton" onClick= {() => createNote(
-          textAreaValue, setTextareaValue, setNotes, date
+          textAreaValue, setTextareaValue, date, setNotes
         )}>Accept</button>
         <button className="popUpCancelButton" onClick= {() => setIsNoteDivVisible((prev) => !prev)}>Cancel</button>
       </div> 
