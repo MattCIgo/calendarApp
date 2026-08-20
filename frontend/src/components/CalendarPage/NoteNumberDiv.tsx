@@ -6,7 +6,7 @@ interface NoteNumberDivProps {
   date: string,
   setIsNoteNumberDivVisible: React.Dispatch<React.SetStateAction<boolean>>,
   notes: Note[] | null,
-  setNotes: React.Dispatch<React.SetStateAction<Note[]>>
+  setNotes?: React.Dispatch<React.SetStateAction<Note[]>>
 }
 
 function NoteNumberDiv ({date, setIsNoteNumberDivVisible, notes, setNotes}: NoteNumberDivProps) {

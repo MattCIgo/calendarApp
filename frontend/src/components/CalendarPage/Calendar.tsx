@@ -9,8 +9,8 @@ interface calendarPageProps {
   month: string;
   year: number;
   monthNumber: number;
-  notes: Note[],
-  setNotes: React.Dispatch<React.SetStateAction<Note[]>>,
+  notes?: Note[],
+  setNotes?: React.Dispatch<React.SetStateAction<Note[]>>,
 }
 
 // TODO: use hooks and use states, etc...
@@ -136,9 +136,9 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber, notes
             {noteCountsByDate[getFullDate(day, month,year.toString())] ? noteCountsByDate[getFullDate(day, month,year.toString())] : 0}
           </div>
           {visibleDay === day && <NoteDiv day={day} date={getFullDate(day, month, year.toString())} 
-            setIsNoteDivVisible={() => setVisibleDay(null)} setNotes = {setNotes ?? null}/>}
+            setIsNoteDivVisible={() => setVisibleDay(null)} setNotes = {setNotes}/>}
           {visibleNoteNumber === day && <NoteNumberDiv date={getFullDate(day, month, year.toString())}
-            setIsNoteNumberDivVisible={() => setVisibleNoteNumber(null)} notes={notes ?? null} setNotes={setNotes ?? null}/> }
+            setIsNoteNumberDivVisible={() => setVisibleNoteNumber(null)} notes={notes ?? null} setNotes={setNotes}/> }
       </div>)}
     </div>
   );
