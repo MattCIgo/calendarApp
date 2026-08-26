@@ -1,5 +1,5 @@
 import {useEffect, useRef} from 'react';
-import {logout} from '../utils.tsx';
+import {Logout} from '../utils.tsx';
 import { Link, unstable_HistoryRouter, useNavigate, useLocation} from "react-router-dom";
 import "./nav-bar.css"
 
@@ -53,7 +53,7 @@ const Navbar = (): JSX.Element => {
         <Link to="/" id="title">Calendar App</Link>
         <div id="links" ref={links}>
           <Link to="/Calendar">Calendar</Link>
-          <Link to="/" onClick={()=>logout(navigate)}>Logout</Link>
+          <Link to="/" onClick={()=>Logout(navigate)}>Logout</Link>
         </div>
         <a className="icon" onClick={clickMenuFunction}>
           <i className="fa fa-bars"></i>

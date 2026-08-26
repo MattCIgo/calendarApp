@@ -9,9 +9,12 @@ import RecoverPasswordPage from "./components/RecoverPasswordPage/RecoverPasswor
 import { Route, Routes } from "react-router-dom";
 import { DateProvider } from "./contexts/DateContext";
 
+import { TokenProvider } from "./contexts/TokenContext";
+
 function App() {
   return (
     <DateProvider>
+    <TokenProvider>
       <div className="App">      
         <Navbar/>
         <div className="page">
@@ -25,6 +28,7 @@ function App() {
           </Routes>
         </div>
       </div>
+    </TokenProvider>
     </DateProvider>
     
   );

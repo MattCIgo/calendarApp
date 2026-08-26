@@ -16,7 +16,10 @@ from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
 from datetime import datetime
 from . import serializers, models
-from .tokens import account_activation_token
+# from .tokens import account_activation_token
+from config import base
+
+from rest_framework_simplejwt.tokens import RefreshToken
 import random, json
 
 # TODO: more descriptive errors
@@ -51,8 +54,6 @@ def activate(request):
 """
   Create User
 """
-# TODO: User already exists error even after deleting (could be frontend problem)
-#        TOKEN PROBLEM?
 class UserCreate(APIView):
   def post(self, request, format=None):
     # TODO: Check for user already exists serializer error ******
@@ -102,19 +103,25 @@ class UserLogin(APIView):
     email = serializer.validated_data['email']
     password = serializer.validated_data['password']
 
-    user = models.User.objects.filter(email=email, password=password)
-    if user.exists():
-      uid = models.User.objects.get(email=email, password=password).user_id
+    user = models.User.objects.get(email=email, password=password)
 
-    if not user.exists():  
-      return Response([{"error": "User doesn't exist"}], status=status.HTTP_400_BAD_REQUEST)
-    elif user.exists() and Token.objects.filter(user_id=uid):
-      return Response([{"token": Token.objects.get(user_id=uid).key}], status=status.HTTP_200_OK)
+    if not user:  
+      return Response({"error": "User doesn't exist"}, status=status.HTTP_400_BAD_REQUEST)
 
-    user_token = Token.objects.create(user=user[0])
+    refresh = RefreshToken.for_user(user)
 
-    return Response([{"token": user_token.key}], status=status.HTTP_200_OK)
+    response = Response({"access": str(refresh.access_token)}, status=status.HTTP_200_OK)
 
+    response.set_cookie(
+      key=base.SIMPLE_JWT['REFRESH_COOKIE'],
+      value=str(refresh),
+      expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+      secure=settings.SIMPLE_JWT['COOKIE_SECURE'],
+      httponly=settings.SIMPLE_JWT['COOKIE_HTTP_ONLY'],
+      samesite=settings.SIMPLE_JWT['COOKIE_SAMESITE']
+    )
+
+    return response
 
 """
   Logging out

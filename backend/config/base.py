@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import os
 from project.env import BASE_DIR, env
+from datetime import timedelta
 
 env.read_env(os.path.join(BASE_DIR, '.env'))
 
@@ -54,13 +55,27 @@ INSTALLED_APPS = [
     'api',
     'rest_framework',
     'corsheaders',
-    'rest_framework.authtoken',
+    'rest_framework_simplejwt',
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ]
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    
+    "REFRESH_COOKIE": "refresh_token",       
+    "COOKIE_HTTP_ONLY": True,      
+    "COOKIE_SECURE": True,    # Set true in production (HTTPs)   
+    "COOKIE_SAMESITE": "Lax",  
+
+    'USER_ID_FIELD': 'user_id',     
 }
 
 MIDDLEWARE = [

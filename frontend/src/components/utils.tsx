@@ -3,7 +3,7 @@ import { NavigateFunction } from 'react-router-dom';
 
 
 // logout function
-export function logout(navigate: NavigateFunction) {
+export function Logout(navigate: NavigateFunction) {
   const token = localStorage.getItem('token'); // make useContext variable
   const currentUrl = window.location.href;
 
@@ -33,9 +33,11 @@ export function logout(navigate: NavigateFunction) {
 }
 
 // Login function
-export function login(email: string, password: string, navigate: NavigateFunction, event: React.FormEvent<HTMLFormElement>) {
-  event.preventDefault();
+export function Login(email: string, password: string, login: (newToken: string) => void, 
+  navigate: NavigateFunction, event: React.FormEvent<HTMLFormElement>) {
 
+  event.preventDefault();
+ 
   // Check for empty Strings
   if (!email || !password) {
       alert("Enter All Credentials");
@@ -51,9 +53,9 @@ export function login(email: string, password: string, navigate: NavigateFunctio
   }).then(response => {
     return response.json();
   }).then(data => {
-    if (data[0].token) {
+    if (data.access) {
       navigate("/", { replace: true});
-      localStorage.setItem('token', data[0].token);
+      login(data.access)
       return 
     }
     
