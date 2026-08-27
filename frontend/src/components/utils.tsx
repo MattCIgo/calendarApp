@@ -3,18 +3,19 @@ import { NavigateFunction } from 'react-router-dom';
 
 
 // logout function
-export function Logout(navigate: NavigateFunction) {
+export function Logout(navigate: NavigateFunction, logout: () => void) {
   const token = localStorage.getItem('token'); // make useContext variable
   const currentUrl = window.location.href;
 
   fetch('http://localhost:8000/logout', {
       method: 'POST',
+      credentials: 'include',
       headers: { "Content-Type" : "application/json",
-          "Authorization": `Token ${token}`,
+          "Authorization": `Bearer ${token}`,
           },
   }).then(response => {
     if (response.ok) {
-      localStorage.removeItem('token');
+      logout();
       
       //if on homepage then reload, else navigate to homepage/ TODO: better way to reload, refreshes whole page?
       if (currentUrl == "http://localhost:5173/") {
@@ -23,7 +24,6 @@ export function Logout(navigate: NavigateFunction) {
         navigate("/", { replace: true});
       }
     } else {
-      localStorage.removeItem('token');
       navigate("/", { replace: true});
     }
   }).catch((error) =>{
@@ -62,6 +62,23 @@ export function Login(email: string, password: string, login: (newToken: string)
     alert("Incorrect Username or Password");
   })
 } 
+
+
+// request new access token
+export const RequestAccess = async () => {
+  const refreshResponse = await fetch('http://localhost:8000/api/token/refresh/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+  })
+
+  if (refreshResponse.ok) {
+    const data = await refreshResponse.json();
+    return data;
+  } else {
+    throw new Error("Unable to get new access token");
+  }
+}
 
 
 

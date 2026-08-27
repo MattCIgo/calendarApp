@@ -4,11 +4,9 @@ import Loginpage from "./components/LoginPage/Loginpage";
 import Signuppage from "./components/SignupPage/Signuppage";
 import Calendarpage from "./components/CalendarPage/Calendarpage";
 import Emailactivation from "./components/EmailActivation/Emailactivation";
-
 import RecoverPasswordPage from "./components/RecoverPasswordPage/RecoverPasswordPage";
 import { Route, Routes } from "react-router-dom";
 import { DateProvider } from "./contexts/DateContext";
-
 import { TokenProvider } from "./contexts/TokenContext";
 
 function App() {

@@ -16,10 +16,10 @@ from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
 from datetime import datetime
 from . import serializers, models
-# from .tokens import account_activation_token
 from config import base
-
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 import random, json
 
 # TODO: more descriptive errors
@@ -102,26 +102,29 @@ class UserLogin(APIView):
     serializer.is_valid()
     email = serializer.validated_data['email']
     password = serializer.validated_data['password']
+    
+    try: 
+      user = models.User.objects.get(email=email, password=password)
 
-    user = models.User.objects.get(email=email, password=password)
+      refresh = RefreshToken.for_user(user)
 
-    if not user:  
+      response = Response({"access": str(refresh.access_token)}, status=status.HTTP_200_OK)
+
+      response.set_cookie(
+        key=base.SIMPLE_JWT['REFRESH_COOKIE'],
+        value=str(refresh),
+        expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+        secure=settings.SIMPLE_JWT['COOKIE_SECURE'],
+        httponly=settings.SIMPLE_JWT['COOKIE_HTTP_ONLY'],
+        samesite=settings.SIMPLE_JWT['COOKIE_SAMESITE']
+      )
+
+      return response
+
+    except Exception as e:  
       return Response({"error": "User doesn't exist"}, status=status.HTTP_400_BAD_REQUEST)
 
-    refresh = RefreshToken.for_user(user)
-
-    response = Response({"access": str(refresh.access_token)}, status=status.HTTP_200_OK)
-
-    response.set_cookie(
-      key=base.SIMPLE_JWT['REFRESH_COOKIE'],
-      value=str(refresh),
-      expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
-      secure=settings.SIMPLE_JWT['COOKIE_SECURE'],
-      httponly=settings.SIMPLE_JWT['COOKIE_HTTP_ONLY'],
-      samesite=settings.SIMPLE_JWT['COOKIE_SAMESITE']
-    )
-
-    return response
+    
 
 """
   Logging out
@@ -129,22 +132,28 @@ class UserLogin(APIView):
 class UserLogout(APIView):
   def post(self, request, format=None):
     try:
-      if request.user:
-        request.user.auth_token.delete()
-          
+      refresh = request.data.get("refresh")
+
+      if not refresh:
+        return Response({"error": "Refresh Token Required"}, status=status.HTTP_400_BAD_REQUEST)
+
+      token = RefreshToken(refresh)
+      token.blacklist()
+
       return Response([{"message": "Logged Out"}], status=status.HTTP_200_OK)
 
-    except Token.DoesNotExist:
-      return Response([{"error": "Token Does not Exist"}], status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+      return Response([{"error": "Invalid Token"}], status=status.HTTP_400_BAD_REQUEST)
 
 
-"""
-  Creating a Note
-"""
+
 class UserNoteView(APIView):
-  """ 
-   Creating a note 
   """
+    Creating a Note
+  """
+  authentication_classes = [JWTAuthentication]
+  permission_classes = [IsAuthenticated]
+
   def post(self, request, format=None):
     serializer = serializers.CreateUserNoteSerializer(data=request.data)
 
@@ -198,7 +207,7 @@ class UserNoteView(APIView):
         user_notes = models.UserNote.objects.filter(user_id=request.user.user_id)
 
       # TODO: better way to serialize??? custom ?
-      data = djangoserializers.serialize('json', user_notes)
+      data = json.loads(djangoserializers.serialize('json', user_notes))
 
       return Response(data, status=status.HTTP_200_OK)
 

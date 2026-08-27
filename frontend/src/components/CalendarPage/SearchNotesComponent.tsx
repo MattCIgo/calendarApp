@@ -2,6 +2,7 @@ import React, {useState} from "react"
 import Note from "../../types/note.ts"
 import './calendar-page.css'
 import {deleteNote} from "./calendarUtils.tsx"
+import { useToken } from '../../contexts/TokenContext.tsx'
 
 interface SearchNotesProps {
   setNotes: React.Dispatch<React.SetStateAction<Note[]>>
@@ -39,7 +40,7 @@ const SearchNotesComponent: React.FC<SearchNotesProps> = ({setNotes}): JSX.Eleme
   }
 
   const getNotes = () => {
-    const token = localStorage.getItem('token');
+    const { accessToken } = useToken();
 
     const queryParamsObj = {
       "keyWords": searchParameters[0],
@@ -54,7 +55,7 @@ const SearchNotesComponent: React.FC<SearchNotesProps> = ({setNotes}): JSX.Eleme
     fetch(`http://localhost:8000/notes?${queryString}`, {
       method: 'GET',
       headers: { "Content-Type" : "application/json",
-        "Authorization": `Token ${token}`,
+        "Authorization": `Bearer ${accessToken}`,
         },
       }).then(response => {
         if(response.ok) {

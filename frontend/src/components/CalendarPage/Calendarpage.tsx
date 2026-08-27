@@ -5,7 +5,6 @@ import Note from "../../types/note.ts"
 import './calendar-page.css'
 
 const Calendarpage = (): JSX.Element => {
-  const token = localStorage.getItem('token');
   const currentDate = new Date();
   const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   let [monthIndex, setMonthIndex] = useState(currentDate.getMonth());

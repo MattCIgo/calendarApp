@@ -1,10 +1,11 @@
-import {useEffect, useRef} from 'react';
+import {useEffect, useContext, useRef} from 'react';
 import {Logout} from '../utils.tsx';
 import { Link, unstable_HistoryRouter, useNavigate, useLocation} from "react-router-dom";
 import "./nav-bar.css"
+import { useToken } from '../../contexts/TokenContext.tsx';
 
 const Navbar = (): JSX.Element => {
-  const token = localStorage.getItem('token');
+  const { logout, accessToken } = useToken();
   const navigate = useNavigate();
   const links = useRef<HTMLDivElement | null>(null);
 
@@ -47,13 +48,13 @@ const Navbar = (): JSX.Element => {
     }
   }
 
-  if(token){
+  if(accessToken){
     return (
       <nav className="usernavbar">
         <Link to="/" id="title">Calendar App</Link>
         <div id="links" ref={links}>
           <Link to="/Calendar">Calendar</Link>
-          <Link to="/" onClick={()=>Logout(navigate)}>Logout</Link>
+          <Link to="/" onClick={()=>Logout(navigate, logout)}>Logout</Link>
         </div>
         <a className="icon" onClick={clickMenuFunction}>
           <i className="fa fa-bars"></i>

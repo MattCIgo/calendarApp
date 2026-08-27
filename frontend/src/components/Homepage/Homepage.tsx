@@ -5,11 +5,12 @@ import calendarScreenShot3 from '../../images/calendarScreenShot3.png'
 import calendarScreenShot4 from '../../images/calendarScreenShot4.png'
 import React, {useState} from 'react'
 import Calendar from '../CalendarPage/Calendar.tsx'
+import { useToken } from '../../contexts/TokenContext.tsx'
 import './home-page.css'
 
 /** TODO: can't use image without import??? */
 const Homepage = (): JSX.Element => {
-  const token = localStorage.getItem('token');
+  const { accessToken } = useToken();
   const tutorialImages: string[] = [calendarScreenShot, calendarScreenShot2, calendarScreenShot3, calendarScreenShot4]; // TODO: better way for this?
   const tutorialDescription: string[][] = [['Check your Calendar', 'Go to the Calendar Page to check your personalized calendar and make updates and notes.'], 
   ['Create and Check Notes', 'hihi'], ['Create a Note', 'hihihi'], ['Check Past Notes', 'hihihihi']];
@@ -38,7 +39,7 @@ const Homepage = (): JSX.Element => {
       index++;
 
       if (index == tutorialImages.length) {
-        return console.log("Somerthing went Wrong in tutorialImageHandler");
+        return console.log("Something went Wrong in tutorialImageHandler");
       }
     }
 
@@ -66,7 +67,7 @@ const Homepage = (): JSX.Element => {
 
   }
 
-  if (token) {
+  if (accessToken) {
     return (
       <div className="homeContainer"> 
         <div className="intro">

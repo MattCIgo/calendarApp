@@ -1,10 +1,11 @@
 import Note from "../../types/note.ts"
+import { useToken } from '../../contexts/TokenContext.tsx'
 
 // TODO: pass setNotes and setSearchedNtoes parameters and textareavalues
 
 export function createNote(textAreaValue: string, setTextAreaValue: React.Dispatch<React.SetStateAction<string>>, 
   date: string, setNotes?: React.Dispatch<React.SetStateAction<Note[]>>) {
-  const token = localStorage.getItem('token'); 
+  const { accessToken } = useToken();
   const message = textAreaValue;
   setTextAreaValue('');
 
@@ -15,7 +16,7 @@ export function createNote(textAreaValue: string, setTextAreaValue: React.Dispat
   fetch('http://localhost:8000/notes', {
     method: 'POST',
     headers: { "Content-Type" : "application/json",
-      "Authorization": `Token ${token}`,
+      "Authorization": `Bearer ${accessToken}`,
     },
     body: JSON.stringify({"message" : message,
       "date" : date,

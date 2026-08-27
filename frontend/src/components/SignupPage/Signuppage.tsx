@@ -3,7 +3,6 @@ import fall from '../../images/fall.jpg'
 import "./signup-page.css"
 
 const Signuppage = (): JSX.Element => {
-
   const handleSignup = (e: React.ChangeEvent<any>) => {
     e.preventDefault();
 

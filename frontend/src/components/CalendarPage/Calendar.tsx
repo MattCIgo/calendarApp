@@ -4,6 +4,8 @@ import NoteDiv from "./NoteDiv.tsx"
 import NoteNumberDiv from "./NoteNumberDiv.tsx"
 import Note from "../../types/note.ts"
 import './calendar-page.css'
+import { useToken } from '../../contexts/TokenContext.tsx'
+import { RequestAccess } from "../utils.tsx"
 
 interface calendarPageProps {
   month: string;
@@ -15,7 +17,7 @@ interface calendarPageProps {
 
 // TODO: use hooks and use states, etc...
 const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber, notes, setNotes }): JSX.Element => {
-  const token = localStorage.getItem('token');
+  const { accessToken, login } = useToken();
   const [visibleDay, setVisibleDay] = useState<number | null>(null);
   const [visibleNoteNumber, setVisibleNoteNumber] = useState<number | null>(null);
   const monthDate = new Date(month + "-" + "1" + "-" + year);
@@ -37,29 +39,39 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber, notes
   // get the initial notes from server
   // TODO; I/O bound, make thread?
   useEffect (() => {
-    fetch('http://localhost:8000/notes', {
-      method: 'GET',
-      headers: { "Content-Type" : "application/json",
-        "Authorization": `Token ${token}`,
-        },
-      }).then(response => {
-        if(response.ok) {
-          console.log("Notes received");
-        } else {
-          //TODO: get more specific error from backend
-          throw new Error("Something went wrong");
+    const fetchNotes = async (accessToken: string) => {
+      const response = await fetch('http://localhost:8000/notes', {
+        method: 'GET',
+        headers: { "Content-Type" : "application/json",
+          "Authorization": `Bearer ${accessToken}`,
+          },
+        })
+        
+        
+
+        if (response.status === 401 ) {
+          const newToken = await RequestAccess();
+
+          if (newToken) {
+            login(newToken);
+            return fetchNotes(newToken);
+          }
         }
 
-        return response.json();
-      }).then(data => {
-        const jsonString = JSON.parse(data);
-        if (setNotes) {
-          setNotes(jsonString);
+        if (!response.ok) {
+          throw new Error("Failed to receive notes");
         }
-      }).catch((error) =>{
-        // TODO: parse error message/ how to replaces email with default object to access error? for loop?
-        alert(error.message);
-    })
+
+        const data = await response.json();
+        console.log(data);
+        if(setNotes) {
+          setNotes(data);
+        }
+    }
+
+    if (accessToken) {
+      fetchNotes(accessToken);
+    }
   }, [])
 
   // TODO: check noteCounts byDate array in console
