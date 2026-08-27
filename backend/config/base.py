@@ -72,10 +72,13 @@ SIMPLE_JWT = {
     
     "REFRESH_COOKIE": "refresh_token",       
     "COOKIE_HTTP_ONLY": True,      
-    "COOKIE_SECURE": True,    # Set true in production (HTTPs)   
+    "COOKIE_SECURE": False,    # Set true in production (HTTPs)   
     "COOKIE_SAMESITE": "Lax",  
 
-    'USER_ID_FIELD': 'user_id',     
+    "AUTH_HEADER_TYPES": ("Bearer",),
+
+    'USER_ID_FIELD': 'user_id',  
+    "USER_ID_CLAIM": "user_id",   
 }
 
 MIDDLEWARE = [
@@ -169,6 +172,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     env("FRONTEND_URL"),
 ]

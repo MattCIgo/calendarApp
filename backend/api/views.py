@@ -16,10 +16,11 @@ from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
 from datetime import datetime
 from . import serializers, models
-from config import base
+from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.views import TokenRefreshView
 import random, json
 
 # TODO: more descriptive errors
@@ -50,6 +51,42 @@ def activate(request):
     return Response({"error": "Link Invalid or Account already activated"}, status=status.HTTP_400_BAD_REQUEST)
 
   return Response({"error": "Something went wrong!"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# TODO: Custom TokenRefreshView that handles refresh token in cookies
+class CustomTokenRefreshView(TokenRefreshView):
+  def post(self, request, *list_args, **kwargs):
+    refresh_token = request.COOKIES.get('refresh_token')
+    
+    if not refresh_token:
+      print("in refresh token not")
+      return Response({"error": "Refresh token missing"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    request.data['refresh'] = refresh_token
+    
+    try:
+      response = super().post(request, *list_args, **kwargs)
+        
+      if response.status_code == 200:
+        new_refresh = response.data.get('refresh')
+        if new_refresh:
+          lifetime = settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME']
+
+          response.set_cookie(
+            key=settings.SIMPLE_JWT['REFRESH_COOKIE'],
+            value=str(new_refresh),
+            max_age=int(lifetime.total_seconds()),
+            secure=settings.SIMPLE_JWT['COOKIE_SECURE'],
+            httponly=settings.SIMPLE_JWT['COOKIE_HTTP_ONLY'],
+            samesite=settings.SIMPLE_JWT['COOKIE_SAMESITE']
+          )
+          
+          del response.data['refresh'] 
+      return response
+        
+    except Exception as e:
+      return Response({"error": "Invalid token"}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 """
   Create User
@@ -110,10 +147,12 @@ class UserLogin(APIView):
 
       response = Response({"access": str(refresh.access_token)}, status=status.HTTP_200_OK)
 
+      lifetime = settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME']
+
       response.set_cookie(
-        key=base.SIMPLE_JWT['REFRESH_COOKIE'],
+        key=settings.SIMPLE_JWT['REFRESH_COOKIE'],
         value=str(refresh),
-        expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+        max_age=int(lifetime.total_seconds()),
         secure=settings.SIMPLE_JWT['COOKIE_SECURE'],
         httponly=settings.SIMPLE_JWT['COOKIE_HTTP_ONLY'],
         samesite=settings.SIMPLE_JWT['COOKIE_SAMESITE']
@@ -152,7 +191,7 @@ class UserNoteView(APIView):
     Creating a Note
   """
   authentication_classes = [JWTAuthentication]
-  permission_classes = [IsAuthenticated]
+  permission_classes = [JWTAuthentication]
 
   def post(self, request, format=None):
     serializer = serializers.CreateUserNoteSerializer(data=request.data)

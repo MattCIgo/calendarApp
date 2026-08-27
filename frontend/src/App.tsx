@@ -5,14 +5,41 @@ import Signuppage from "./components/SignupPage/Signuppage";
 import Calendarpage from "./components/CalendarPage/Calendarpage";
 import Emailactivation from "./components/EmailActivation/Emailactivation";
 import RecoverPasswordPage from "./components/RecoverPasswordPage/RecoverPasswordPage";
+import { useEffect, useState } from "react"
 import { Route, Routes } from "react-router-dom";
 import { DateProvider } from "./contexts/DateContext";
-import { TokenProvider } from "./contexts/TokenContext";
+import { useToken } from "./contexts/TokenContext";
+import { RequestAccess } from "./components/utils";
 
 function App() {
+  const { login , logout } = useToken();
+  const [isInitializing, setIsInitializing] = useState(true);
+
+  useEffect(() => {
+    const pageRefresh = async () => {
+      try {
+        const newToken = await RequestAccess();
+        if (newToken) {
+          login(newToken);
+        }
+      } catch (error) {
+        console.log("No valid Session");
+        logout();
+      } finally {
+        setIsInitializing(false);
+      }
+    }
+
+    pageRefresh();
+  }, []);
+
+  if (isInitializing) {
+    return <div>Loading...</div>;
+  }
+
+
   return (
     <DateProvider>
-    <TokenProvider>
       <div className="App">      
         <Navbar/>
         <div className="page">
@@ -26,7 +53,6 @@ function App() {
           </Routes>
         </div>
       </div>
-    </TokenProvider>
     </DateProvider>
     
   );

@@ -50,6 +50,7 @@ export function Login(email: string, password: string, login: (newToken: string)
     body: JSON.stringify({"email" : email,
       "password" : password
     }),
+    credentials: 'include', 
   }).then(response => {
     return response.json();
   }).then(data => {
@@ -66,7 +67,7 @@ export function Login(email: string, password: string, login: (newToken: string)
 
 // request new access token
 export const RequestAccess = async () => {
-  const refreshResponse = await fetch('http://localhost:8000/api/token/refresh/', {
+  const refreshResponse = await fetch('http://localhost:8000/tokenrefresh', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -74,7 +75,7 @@ export const RequestAccess = async () => {
 
   if (refreshResponse.ok) {
     const data = await refreshResponse.json();
-    return data;
+    return data.access;
   } else {
     throw new Error("Unable to get new access token");
   }

@@ -39,18 +39,21 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber, notes
   // get the initial notes from server
   // TODO; I/O bound, make thread?
   useEffect (() => {
+    const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
     const fetchNotes = async (accessToken: string) => {
+
       const response = await fetch('http://localhost:8000/notes', {
         method: 'GET',
         headers: { "Content-Type" : "application/json",
           "Authorization": `Bearer ${accessToken}`,
           },
         })
-        
-        
 
         if (response.status === 401 ) {
+
           const newToken = await RequestAccess();
+
 
           if (newToken) {
             login(newToken);
@@ -63,7 +66,6 @@ const Calendar: React.FC<calendarPageProps> = ({ month, year, monthNumber, notes
         }
 
         const data = await response.json();
-        console.log(data);
         if(setNotes) {
           setNotes(data);
         }
