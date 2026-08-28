@@ -3,16 +3,15 @@ import { NavigateFunction } from 'react-router-dom';
 
 
 // logout function
-export function Logout(navigate: NavigateFunction, logout: () => void) {
-  const token = localStorage.getItem('token'); // make useContext variable
+export function Logout(navigate: NavigateFunction, logout: () => void, accessToken: string) {
   const currentUrl = window.location.href;
 
   fetch('http://localhost:8000/logout', {
       method: 'POST',
       credentials: 'include',
       headers: { "Content-Type" : "application/json",
-          "Authorization": `Bearer ${token}`,
-          },
+        "Authorization": `Bearer ${accessToken}`,
+        },
   }).then(response => {
     if (response.ok) {
       logout();

@@ -1,11 +1,7 @@
-from django.shortcuts import render
 from django.conf import settings
 from django.core import serializers as djangoserializers
-from django.utils import timezone
-from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.template.loader import render_to_string
-from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -13,8 +9,6 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
-from rest_framework.authtoken.models import Token
-from datetime import datetime
 from . import serializers, models
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -23,13 +17,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.views import TokenRefreshView
 import random, json
 
-# TODO: more descriptive errors
-# TODO: cleanup imports
-# TODO: best way to use multiple get methods in a single view? or explicit url mapping?
 
-# TODO: Runs twice? gets both account activated and link invalid (probably frontend problem (UseEffect?))
-# TODO: cleanup errors and other stuff
-# TODO: serializer for this????
 @api_view(['POST'])
 def activate(request):
   uid = request.data.get('uidb64')
@@ -53,14 +41,13 @@ def activate(request):
   return Response({"error": "Something went wrong!"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-# TODO: Custom TokenRefreshView that handles refresh token in cookies
+# Get new Refresh Token 
 class CustomTokenRefreshView(TokenRefreshView):
   def post(self, request, *list_args, **kwargs):
-    refresh_token = request.COOKIES.get('refresh_token')
+    refresh_token = request.COOKIES.get(settings.SIMPLE_JWT.get('REFRESH_COOKIE'))
     
     if not refresh_token:
-      print("in refresh token not")
-      return Response({"error": "Refresh token missing"}, status=status.HTTP_400_BAD_REQUEST)
+      return Response({"error": "Refresh token missing"}, status=status.HTTP_401_UNAUTHORIZED)
     
     request.data['refresh'] = refresh_token
     
@@ -104,7 +91,7 @@ class UserCreate(APIView):
       email = serializer.validated_data['email']
 
       user = models.User.objects.create(first_name=first_name, last_name=last_name, email=email, password=password)
-      UserCreate.activateAccount(request, user, email)
+      UserCreate._activate_account(request, user, email)
 
       return Response({"message": "User Created! Activate your Account"}, status=status.HTTP_200_OK)
 
@@ -112,7 +99,7 @@ class UserCreate(APIView):
       print(e)
       return Response({"error": "User Already Exists"}, status=status.HTTP_400_BAD_REQUEST)
 
-  def activateAccount(request, user, to_email):
+  def _activate_account(request, user, to_email):
     mail_subject = "Activate your Account."
     message = render_to_string("activate_account.html", {
       'user': user.username,
@@ -150,12 +137,12 @@ class UserLogin(APIView):
       lifetime = settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME']
 
       response.set_cookie(
-        key=settings.SIMPLE_JWT['REFRESH_COOKIE'],
+        key=settings.SIMPLE_JWT.get('REFRESH_COOKIE'),
         value=str(refresh),
         max_age=int(lifetime.total_seconds()),
-        secure=settings.SIMPLE_JWT['COOKIE_SECURE'],
-        httponly=settings.SIMPLE_JWT['COOKIE_HTTP_ONLY'],
-        samesite=settings.SIMPLE_JWT['COOKIE_SAMESITE']
+        secure=settings.SIMPLE_JWT.get('COOKIE_SECURE'),
+        httponly=settings.SIMPLE_JWT.get('COOKIE_HTTP_ONLY'),
+        samesite=settings.SIMPLE_JWT.get('COOKIE_SAMESITE')
       )
 
       return response
@@ -171,7 +158,7 @@ class UserLogin(APIView):
 class UserLogout(APIView):
   def post(self, request, format=None):
     try:
-      refresh = request.data.get("refresh")
+      refresh = request.COOKIES.get('refresh_token')
 
       if not refresh:
         return Response({"error": "Refresh Token Required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -179,10 +166,15 @@ class UserLogout(APIView):
       token = RefreshToken(refresh)
       token.blacklist()
 
-      return Response([{"message": "Logged Out"}], status=status.HTTP_200_OK)
+      response = Response ({"message": "Successfully Logged Out"}, status=status.HTTP_200_OK)
+
+      response.delete_cookie('refresh_token')
+
+      return response
 
     except Exception as e:
-      return Response([{"error": "Invalid Token"}], status=status.HTTP_400_BAD_REQUEST)
+      print(e)
+      return Response([{"error": e}], status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -191,7 +183,7 @@ class UserNoteView(APIView):
     Creating a Note
   """
   authentication_classes = [JWTAuthentication]
-  permission_classes = [JWTAuthentication]
+  permission_classes = [IsAuthenticated]
 
   def post(self, request, format=None):
     serializer = serializers.CreateUserNoteSerializer(data=request.data)
@@ -245,12 +237,11 @@ class UserNoteView(APIView):
       if request.user:
         user_notes = models.UserNote.objects.filter(user_id=request.user.user_id)
 
-      # TODO: better way to serialize??? custom ?
       data = json.loads(djangoserializers.serialize('json', user_notes))
 
       return Response(data, status=status.HTTP_200_OK)
 
-    except:
+    except Exception as e:
       return Response([{"error": "User not logged In or doesn't exist"}], status=status.HTTP_400_BAD_REQUEST)
 
   def search_notes(self, request):
@@ -270,7 +261,6 @@ class UserNoteView(APIView):
         queryset = models.UserNote.objects.filter(user_id=request.user.user_id, date__range=[start_date, end_date], message__contains = key_words)
         user_notes = queryset.order_by(order)
 
-      # TODO: better way to serialize??? custom ?
       data = djangoserializers.serialize('json', user_notes)
       print(user_notes)
 

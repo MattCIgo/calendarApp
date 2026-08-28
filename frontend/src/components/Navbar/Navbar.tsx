@@ -54,7 +54,7 @@ const Navbar = (): JSX.Element => {
         <Link to="/" id="title">Calendar App</Link>
         <div id="links" ref={links}>
           <Link to="/Calendar">Calendar</Link>
-          <Link to="/" onClick={()=>Logout(navigate, logout)}>Logout</Link>
+          <Link to="/" onClick={()=>Logout(navigate, logout, accessToken)}>Logout</Link>
         </div>
         <a className="icon" onClick={clickMenuFunction}>
           <i className="fa fa-bars"></i>
