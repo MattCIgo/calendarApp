@@ -3,6 +3,7 @@ import fall from '../../images/fall.jpg'
 import "./signup-page.css"
 
 const Signuppage = (): JSX.Element => {
+  
   const handleSignup = (e: React.ChangeEvent<any>) => {
     e.preventDefault();
 
@@ -38,13 +39,14 @@ const Signuppage = (): JSX.Element => {
         "email" : email
       }),
     }).then(response => {
-        if(!response.ok) {
-          return response.json().then(error => {
-            throw new Error(error.error);
-          })
-        }
+      if(!response.ok) {
+        return response.json().then(error => {
+          console.log(error);
+          throw alert(error);
+        })
+      }
 
-        return response.json();
+      return response.json();
     }).then(data =>{
       alert(data.message);
     }).catch((error) =>{

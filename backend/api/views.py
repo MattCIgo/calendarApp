@@ -1,6 +1,9 @@
+from . import serializers, models
+from datetime import timedelta
+import json
 from django.conf import settings
 from django.core import serializers as djangoserializers
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
@@ -8,38 +11,48 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view
-from . import serializers, models
-from django.conf import settings
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.tokens import RefreshToken, Token
+from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.views import TokenRefreshView
-import random, json
+from django.conf import settings
 
 
 @api_view(['POST'])
+# @authentication_classes([]) 
+# @permission_classes([AllowAny])
 def activate(request):
-  uid = request.data.get('uidb64')
-  token = request.data.get('token')
-  user = get_user_model()
+  token_str = request.data.get('token')
+  print(token_str)
 
   try:
-    uid = force_str(urlsafe_base64_decode(uid))
-    user = models.User.objects.get(user_id=uid)
-  except: 
-    user = None
-  
-  if user is not None and account_activation_token.check_token(user, token):
+    token = AccountActivationToken(token_str)
+    user_id = token['user_id']
+    user = models.User.objects.get(user_id=user_id)
+
     user.is_active = True
     user.save()
 
-    return Response({"message": "Account Activated"}, status=status.HTTP_200_OK)
-  else:
-    return Response({"error": "Link Invalid or Account already activated"}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({"message": "Account activated successfully!"}, status=status.HTTP_200_OK)
+  except (models.User.DoesNotExist): 
+    return Response({"error": "User doesn't Exist."}, status=status.HTTP_404_NOT_FOUND)
+  except (TokenError, InvalidToken):
+    return Response({"error": "Link Expired"}, status=status.HTTP_400_BAD_REQUEST)
+    
 
-  return Response({"error": "Something went wrong!"}, status=status.HTTP_400_BAD_REQUEST)
+# Get Account Activation Token
+class AccountActivationToken(Token):
+  token_type = "activation"
+  lifetime = timedelta(days=1)
 
+  @classmethod
+  def for_user(cls, user):
+    token = cls()
+    token['user_id'] = user.user_id
+    return token
 
 # Get new Refresh Token 
 class CustomTokenRefreshView(TokenRefreshView):
@@ -80,36 +93,33 @@ class CustomTokenRefreshView(TokenRefreshView):
 """
 class UserCreate(APIView):
   def post(self, request, format=None):
-    # TODO: Check for user already exists serializer error ******
-    serializer = serializers.UserSerializer(data=request.data)
+    serializer = serializers.CreateUserSerializer(data=request.data)
     
     try:
-      serializer.is_valid()
-      first_name = serializer.validated_data['first_name']
-      last_name = serializer.validated_data['last_name']
-      password = serializer.validated_data['password']
-      email = serializer.validated_data['email']
+      if serializer.is_valid(raise_exception=True):
+        user = serializer.save()
 
-      user = models.User.objects.create(first_name=first_name, last_name=last_name, email=email, password=password)
-      UserCreate._activate_account(request, user, email)
+        self._activate_account(request, user, serializer.validated_data['email'])
 
-      return Response({"message": "User Created! Activate your Account"}, status=status.HTTP_200_OK)
+        return Response({"message": "User Created! Activate your Account"}, status=status.HTTP_200_OK)
+      
+      else:
+        return Response({"error": "Missing Information"}, status=status.HTTP_400_BAD_REQUEST)
+    except (KeyError) as e:
+      return Response({"error": "Missing Email"}, status=status.HTTP_400_BAD_REQUEST)
 
-    except Exception as e:
-      print(e)
-      return Response({"error": "User Already Exists"}, status=status.HTTP_400_BAD_REQUEST)
-
-  def _activate_account(request, user, to_email):
+  def _activate_account(self, request, user, to_email):
     mail_subject = "Activate your Account."
+    token = AccountActivationToken.for_user(user)
+    frontend_url_activate = f"{settings.FRONTEND_URL}/activate/{str(token)}"
     message = render_to_string("activate_account.html", {
       'user': user.username,
-      'react_frontend_url': f"{settings.FRONTEND_URL}/activate/{urlsafe_base64_encode(force_bytes(user.user_id))}/{account_activation_token.make_token(user)}",
+      'react_frontend_url': frontend_url_activate,
       'Protocol': 'http'
     })
 
     email = EmailMessage(mail_subject, message, to={to_email})
 
-    # TODO: Change this to correct error handling
     if email.send():   
       print("Successfully sent email")
     else:
@@ -123,14 +133,19 @@ class UserLogin(APIView):
   def post(self, request, format=None):
     serializer = serializers.LoginUserSerializer(data=request.data)
     
-    serializer.is_valid()
-    email = serializer.validated_data['email']
-    password = serializer.validated_data['password']
-    
-    try: 
-      user = models.User.objects.get(email=email, password=password)
+    if serializer.is_valid():
+      email = serializer.validated_data['email']
+      password = serializer.validated_data['password']
+    else:
+      return Response({"error": "Invalid Username and Password"}, status=status.HTTP_400_BAD_REQUEST)
 
-      refresh = RefreshToken.for_user(user)
+    try: 
+      user = authenticate(request=request, username=email, password=password)
+
+      if user:
+        refresh = RefreshToken.for_user(user)
+      else:
+        return Response({"error": "Invalid Username or Password"}, status=status.HTTP_400_BAD_REQUEST)
 
       response = Response({"access": str(refresh.access_token)}, status=status.HTTP_200_OK)
 
@@ -147,8 +162,8 @@ class UserLogin(APIView):
 
       return response
 
-    except Exception as e:  
-      return Response({"error": "User doesn't exist"}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception:  
+      return Response({"error": "Invalid Username or Password"}, status=status.HTTP_400_BAD_REQUEST)
 
     
 
@@ -168,13 +183,17 @@ class UserLogout(APIView):
 
       response = Response ({"message": "Successfully Logged Out"}, status=status.HTTP_200_OK)
 
-      response.delete_cookie('refresh_token')
+      response.delete_cookie(
+        key=setting.SIMPLE_JWT.get('REFRESH_COOKIE'),
+        path='/',
+        domain=None,
+        samesite=settings.SIMPLE_JWT.get('COOKIE_SAMESITE')
+      )
 
       return response
 
-    except Exception as e:
-      print(e)
-      return Response([{"error": e}], status=status.HTTP_400_BAD_REQUEST)
+    except (TokenError, InvalidToken):
+      return Response([{"error": "Invalid Token"}], status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -189,31 +208,27 @@ class UserNoteView(APIView):
     serializer = serializers.CreateUserNoteSerializer(data=request.data)
 
     try:
-      serializer.is_valid()
-      print(serializer.errors)
-      print(serializer.validated_data['method'])
+      if serializer.is_valid():
+        if (serializer.validated_data['method'] == "createNote"):
+          message = serializer.validated_data['message']
+          date = serializer.validated_data['date']
+          user_id = models.User.objects.get(user_id=request.user.user_id)
 
-      if (serializer.validated_data['method'] == "createNote"):
-        message = serializer.validated_data['message']
-        date = serializer.validated_data['date']
-        user_id = models.User.objects.get(user_id=request.user.user_id)
+          new_note = models.UserNote(message=message, user_id=user_id, date = date)
+          new_note.save()
 
-        new_note = models.UserNote(message=message, user_id=user_id, date = date)
-        new_note.save()
+          return_note = djangoserializers.serialize('json', [new_note,])
 
-        return_note = djangoserializers.serialize('json', [new_note,])
+          return Response([{"message": "Created Note", "return_note": return_note}], status=status.HTTP_200_OK)
 
-        return Response([{"message": "Created Note", "return_note": return_note}], status=status.HTTP_200_OK)
+        elif (serializer.validated_data['method'] == "deleteNote"):
+          user_id = models.User.objects.get(user_id=request.user.user_id)
+          note_id = serializer.validated_data['note_id']
 
-      elif (serializer.validated_data['method'] == "deleteNote"):
-        print(serializer.validated_data['note_id'])
-        user_id = models.User.objects.get(user_id=request.user.user_id)
-        note_id = serializer.validated_data['note_id']
+          note = models.UserNote.objects.get(note_id = note_id, user_id=user_id)
+          note.delete()
 
-        note = models.UserNote.objects.get(note_id = note_id, user_id=user_id)
-        note.delete()
-
-        return Response({"message": "Deleted Note"}, status=status.HTTP_200_OK)
+          return Response({"message": "Deleted Note"}, status=status.HTTP_200_OK)
 
       else: 
         raise Exception("invalid method")           
@@ -244,6 +259,9 @@ class UserNoteView(APIView):
     except Exception as e:
       return Response([{"error": "User not logged In or doesn't exist"}], status=status.HTTP_400_BAD_REQUEST)
 
+  """
+    Search for Specific Notes
+  """
   def search_notes(self, request):
     try:
       key_words = request.GET.get('keyWords', '')

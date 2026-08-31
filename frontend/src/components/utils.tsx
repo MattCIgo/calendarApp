@@ -59,7 +59,7 @@ export function Login(email: string, password: string, login: (newToken: string)
       return 
     }
     
-    alert("Incorrect Username or Password");
+    alert(data.error);
   })
 } 
 

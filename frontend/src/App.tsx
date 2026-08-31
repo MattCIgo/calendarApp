@@ -49,7 +49,7 @@ function App() {
             <Route path="/Signup" element={<Signuppage />} />
             <Route path="/Calendar" element={<Calendarpage />} />
             <Route path="/RecoverPassword" element={<RecoverPasswordPage />} />
-            <Route path="/activate/:uidb64/:token" element={<Emailactivation />} />
+            <Route path="/activate/:token" element={<Emailactivation />} />
           </Routes>
         </div>
       </div>

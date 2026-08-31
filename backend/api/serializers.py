@@ -8,13 +8,22 @@ user Model Serializers
 class UserSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
-    fields = ('first_name', 'last_name', 'email', 'password')
+    fields = ('user_id', 'first_name', 'last_name', 'email', 'password')
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
   class Meta:
-    model = User
-    fields = ('user_id', 'first_name', 'last_name', 'email', 'password')
+    model = User 
+    fields = ('first_name', 'last_name', 'email', 'password')
+
+  def create(self, validated_data):
+    return User.objects.create_user(
+        username=validated_data['email'],
+        email=validated_data['email'],
+        password=validated_data['password'],
+        first_name=validated_data.get('first_name', ''),
+        last_name=validated_data.get('last_name', '')
+    )
 
 
 #TODO: more rigorous login validation, check if the correct datatype, whether in the database, etc...

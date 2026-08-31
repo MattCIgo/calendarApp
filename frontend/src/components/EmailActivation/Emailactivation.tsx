@@ -2,17 +2,13 @@ import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import "./email-activation.css"
 
-//TODO: better error checking, UIDB64 is undefined now
 const EmailActivation = () => {
-  const { uidb64, token } = useParams();
+  const { token } = useParams();
   const navigate = useNavigate();
 
-  console.log(uidb64 + "    " + token);
-  console.log("IN EMAIL ACTIVATION")
-
   useEffect(() => {
-    if (!token || !uidb64) {
-     console.error("Unable to verify token or user id");
+    if (!token) {
+     console.error("Unable to verify token");
      return;
     }
 
@@ -21,15 +17,15 @@ const EmailActivation = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({"uidb64" : uidb64,
-      "token" : token
+      body: JSON.stringify({ 
+        "token" : token
       }),
     }).then(response => {
       return response.json();
     }).then(data =>{
-      console.log(data);
+      alert("Successfully Activated Account");
     })
-  }, [uidb64, token, navigate]);
+  }, [token, navigate]);
 
   // TODO: Just make this the homepage? make small div that handles activation
   return(
