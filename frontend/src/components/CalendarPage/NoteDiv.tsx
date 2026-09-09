@@ -30,9 +30,9 @@ function NoteDiv({date, day, setIsNoteDivVisible, setNotes}: NoteDivProps) {
       <label id="labelNoteBox" htmlFor="createNoteTextBox">Enter Note?</label>
       <div id="textAreaDiv">
         <textarea id="createNoteTextBox" value={textAreaValue} placeholder="..." onChange={(event) => handleNoteChange(event)}></textarea>
-        <button className="popUpAcceptButton" onClick= {() => createNote(
+        {accessToken && (<button className="popUpAcceptButton" onClick= {() => createNote(
           textAreaValue, setTextareaValue, date, accessToken, setNotes
-        )}>Accept</button>
+        )}>Accept</button>)}
         <button className="popUpCancelButton" onClick= {() => setIsNoteDivVisible((prev) => !prev)}>Cancel</button>
       </div> 
     </div>

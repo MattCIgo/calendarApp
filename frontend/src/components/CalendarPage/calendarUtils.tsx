@@ -1,10 +1,7 @@
 import Note from "../../types/note.ts"
 
-// TODO: pass setNotes and setSearchedNtoes parameters and textareavalues
-
 export function createNote(textAreaValue: string, setTextAreaValue: React.Dispatch<React.SetStateAction<string>>, 
-  date: string, accessToken: string, setNotes?: React.Dispatch<React.SetStateAction<Note[]>>) {
-  
+  date: string, accessToken: string, setNotes?: React.Dispatch<React.SetStateAction<Note[]>>) {  
   const message = textAreaValue;
   setTextAreaValue('');
 

@@ -1,6 +1,6 @@
-import {useEffect, useContext, useRef} from 'react';
+import {useEffect, useRef} from 'react';
 import {Logout} from '../utils.tsx';
-import { Link, unstable_HistoryRouter, useNavigate, useLocation} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./nav-bar.css"
 import { useToken } from '../../contexts/TokenContext.tsx';
 
