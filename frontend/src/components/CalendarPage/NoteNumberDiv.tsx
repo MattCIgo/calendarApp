@@ -23,7 +23,7 @@ function NoteNumberDiv ({date, setIsNoteNumberDivVisible, notes, setNotes}: Note
           <div className="note" key={index}>
             <div className="noteTitleFlexContainer">
               <button className="deleteNoteButton" onClick={() => deleteNote(note.pk, setNotes)}>X</button>
-              <h1>Note {index+1}:</h1>
+              <h1>Title Of Note:</h1>
             </div>
             <p>{note.fields.message}</p>
           </div>)}
