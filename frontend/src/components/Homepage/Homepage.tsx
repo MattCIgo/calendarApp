@@ -20,7 +20,6 @@ const Homepage = (): JSX.Element => {
   let [monthIndex, setMonthIndex] = useState(currentDate.getMonth());
   let [year, setYear] = useState(currentDate.getFullYear());
 
-  // handle arrows of tutorial images
   // TODO: this function can be made more reusable for other image loops, pass id's of elements
   const tutorialImageHandler = (e: React.MouseEvent<HTMLDivElement>, direction: string) => {
     const image = document.getElementById("tutorialImage") as HTMLImageElement;
