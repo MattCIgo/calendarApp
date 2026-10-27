@@ -8,13 +8,11 @@ import Calendar from '../CalendarPage/Calendar.tsx'
 import { useToken } from '../../contexts/TokenContext.tsx'
 import './home-page.css'
 
-/** TODO: can't use image without import??? */
 const Homepage = (): JSX.Element => {
   const { accessToken } = useToken();
   const tutorialImages: string[] = [calendarScreenShot, calendarScreenShot2, calendarScreenShot3, calendarScreenShot4]; // TODO: better way for this?
   const tutorialDescription: string[][] = [['Check your Calendar', 'Go to the Calendar Page to check your personalized calendar and make updates and notes.'], 
   ['Create and Check Notes', 'hihi'], ['Create a Note', 'hihihi'], ['Check Past Notes', 'hihihihi']];
-  // TODO: what to do with this???
   const currentDate = new Date();
   const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   let [monthIndex, setMonthIndex] = useState(currentDate.getMonth());
