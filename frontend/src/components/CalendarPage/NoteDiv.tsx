@@ -29,7 +29,9 @@ function NoteDiv({date, day, setIsNoteDivVisible, setNotes}: NoteDivProps) {
       <button className="popUpExitButton" onClick= {() => setIsNoteDivVisible((prev) => !prev)}>X</button>
       <label id="labelNoteBox" htmlFor="createNoteTextBox">Enter Note?</label>
       <div id ="noteInputDiv">
-        <div>Title: {/* Title Here */}</div>
+        <div id="noteTitleDiv">Title:
+          <input type="title" id="noteTitleText" name="noteTitle"></input>
+        </div>
         {/* TODO: put divs in containers */}
         <div id="textAreaDiv">
           <textarea id="createNoteTextBox" value={textAreaValue} placeholder="..." onChange={(event) => handleNoteChange(event)}></textarea>
