@@ -564,6 +564,10 @@
         top: 15px;
       }
 
+      #noteInputDiv  {
+        margin-left: calc(10% - 5px);
+      }
+
       #textAreaDiv {
         #createNoteTextBox {
           position: absolute;
