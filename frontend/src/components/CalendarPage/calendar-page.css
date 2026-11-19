@@ -564,17 +564,13 @@
         top: 15px;
       }
 
-      #noteInputDiv  {
-        margin-left: calc(10% - 5px);
-      }
-
       #textAreaDiv {
+        height: 70%;
+
         #createNoteTextBox {
           position: absolute;
           resize: none;
-          top: 13%;
           left: calc(10% - 5px);
-          height: 70%;
           width: 80%;
           border-radius: 5px;
         }
@@ -758,16 +754,22 @@
 
       /*TODO: only needs minor resizing*/
       #labelNoteBox {
-        position: absolute;
+        position: relative;
         left: calc(10% - 5px);
         top: 15px;
       }
 
+      #noteTitleDiv {
+        position: relative;
+        margin-top: 20px;
+        left: calc(10% - 5px);
+      }
+
       #textAreaDiv {
         #createNoteTextBox {
-          position: absolute;
+          position: relative;
           resize: none;
-          top: 13%;
+          margin-top: 10px;
           left: calc(10% - 5px);
           height: 70%;
           width: 80%;
